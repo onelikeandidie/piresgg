@@ -13,9 +13,4 @@ limits = { json = "10MiB" }
 ## don't use this secret_key! generate your own and keep it private!
 [release]
 port = 8080
-secret_key = "nHYOieBdh7HfMZImqidIKXrImRJO02E8iNbQEcURgpg="
-
-# [release.tls]
-# port = 443
-# certs = "/home/betty/ssl/pires_gg.ca-bundle"
-# key = "/home/betty/ssl/pires_gg.p7b"
+secret_key = "secret_key"
