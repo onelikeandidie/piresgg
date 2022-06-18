@@ -1,0 +1,5 @@
+{% extends "base" %}
+{% block title %}About{% endblock title %}
+{% block content %}
+<p>About lol kekw</p>
+{% endblock content %}

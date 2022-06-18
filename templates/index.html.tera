@@ -1,0 +1,11 @@
+{% extends "base" %}
+{% block title %}Home{% endblock title %}
+{% block content %}
+<div class="whole-page">
+    <h1><span class="rainbow-underline special-fonts txt-light txt-big">Soon™</span></h1>
+    <p class="width-c-80 mp-sd txt-middle">
+        A place to share your league of legends builds, play in tournaments, 
+        play around the bush and just have some plain old fun.
+    </p>
+</div>
+{% endblock content %}

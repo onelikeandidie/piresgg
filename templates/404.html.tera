@@ -1,0 +1,8 @@
+{% extends "base" %}
+{% block title %}Not Found{% endblock title %}
+{% block content %}
+<div class="whole-page txt-light">
+    <h1><span class="special-fonts txt-light">Not Found!</span></h1>
+    <a href="/">Back to <span class="piresgg"></span></a>
+</div>
+{% endblock content %}

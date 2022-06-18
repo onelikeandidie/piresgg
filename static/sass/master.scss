@@ -1,0 +1,409 @@
+$master_colour: #faa916;
+$light_colour: #eeeeff;
+$dark_colour: #283044;
+$shade_colour: #6e8898;
+$opposite_colour: #ed6a5a;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    &::after,
+    &::before {
+        box-sizing: border-box;
+    }
+}
+
+body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+        'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background: $dark_colour;
+    color: $light_colour;
+}
+
+a {
+    text-decoration: none;
+    color: $master_colour;
+}
+
+// Nav Bar
+
+body.mobile nav {
+    height: 120px;
+    > div {
+        width: 95%;
+        grid-template-columns: 180px 0fr 1fr;
+    }
+}
+
+nav {
+    height: 80px;
+    background: white;
+    border-bottom: 4px solid $master_colour;
+
+    > div {
+        display: grid;
+        margin: auto;
+        height: 100%;
+        @media screen and (max-width: 760px) {
+            width: 95%;
+            grid-template-columns: 180px 0fr 1fr;
+        }
+        @media screen and (min-width: 760px) {
+            width: 80%;
+            grid-template-columns: 180px 1fr 1fr;
+        }
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        a {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .title {
+            font-size: 16px;
+        }
+    }
+
+    .items {
+        list-style: none;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        li {
+            padding: 0 8px;
+            a {
+                height: 100%;
+                width: 100%;
+                display: block;
+            }
+            &:hover {
+                transform: scale(1.1);
+            }
+
+            @media screen and (max-width: 480px) {
+                &.no-mobile {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .special {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+        height: 60px;
+        a {
+            height: 100%;
+            display: block;
+        }
+        img {
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+}
+
+// Mixins
+
+@mixin rainbow_gradient($rot, $space) {
+    background-image: repeating-linear-gradient(
+        #{$rot}deg,
+        #c4e17f 0px,
+        #c4e17f calc($space * 1 * 1px),
+        #f7fdca calc($space * 1 * 1px),
+        #f7fdca calc($space * 2 * 1px),
+        #fad071 calc($space * 2 * 1px),
+        #fad071 calc($space * 3 * 1px),
+        #f0766b calc($space * 3 * 1px),
+        #f0766b calc($space * 4 * 1px),
+        #db9dbe calc($space * 4 * 1px),
+        #db9dbe calc($space * 5 * 1px),
+        #c49cdf calc($space * 5 * 1px),
+        #c49cdf calc($space * 6 * 1px),
+        #6599e2 calc($space * 6 * 1px),
+        #6599e2 calc($space * 7 * 1px),
+        #61c2e4 calc($space * 7 * 1px),
+        #61c2e4 calc($space * 8 * 1px)
+    );
+}
+
+// Animations
+
+@keyframes h_scrolling_background_anim {
+    from {
+        background-position: 0px 0;
+    }
+    to {
+        background-position: 100px 0;
+    }
+}
+
+@keyframes v_scrolling_background_anim {
+    from {
+        background-position: 0 0px;
+    }
+    to {
+        background-position: 0 100px;
+    }
+}
+
+@keyframes vi_scrolling_background_anim {
+    from {
+        background-position: 0 100px;
+    }
+    to {
+        background-position: 0 0px;
+    }
+}
+
+// Global Styles
+
+span {
+    &.rainbow-underline {
+        position: relative;
+        &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -3px;
+            height: 3px;
+            @include rainbow_gradient(45, 10);
+            background-size: 100px 10px;
+            background-repeat: repeat-x;
+            animation: 8s linear 0s infinite h_scrolling_background_anim;
+        }
+        &:hover {
+            &::after {
+                bottom: -4px;
+                height: 5px;
+                animation: 1s linear 0s infinite h_scrolling_background_anim;
+            }
+            i.icon.rainbowed::after {
+                animation: 4s linear 0s infinite h_scrolling_background_anim;
+                font-size: 1.3rem;
+            }
+        }
+    }
+    &.special-fonts {
+        font-family: 'Kabel Bd', sans-serif;
+        font-style: italic;
+    }
+    &.piresgg {
+        font-family: 'Kabel Bd', sans-serif;
+
+        &::before {
+            color: $master_colour;
+            content: 'pires';
+            text-transform: uppercase;
+        }
+
+        &::after {
+            content: '.gg';
+            padding: 2px 6px;
+            margin: 0 6px;
+            border-radius: 6px;
+            color: $light_colour;
+            background: $master_colour;
+        }
+    }
+}
+
+.txt {
+    &-light {
+        color: $light_colour;
+
+        &.piresgg,
+        .piresgg {
+            &::after {
+                color: $dark_colour;
+                background: $master_colour;
+            }
+        }
+    }
+    &-dark {
+        color: $dark_colour;
+
+        &.piresgg,
+        .piresgg {
+            &::after {
+                color: $master_colour;
+                background: $light_colour;
+            }
+        }
+    }
+    &-epic {
+        color: $master_colour;
+
+        &.piresgg,
+        .piresgg {
+            &::after {
+                color: $master_colour;
+                background: $dark_colour;
+            }
+        }
+    }
+    &-big {
+        @media screen and (max-width: 720px) {
+            font-size: 2em;
+        }
+        @media screen and (min-width: 720px) {
+            font-size: 3em;
+        }
+    }
+    &-middle {
+        text-align: center;
+    }
+}
+
+.mp-sd {
+    margin: 1em;
+    padding: 1em;
+}
+.p-sd {
+    padding: 1em;
+}
+.m-sd {
+    margin: 1em;
+}
+
+@for $width from 1 through 100 {
+    .wrapper-c-#{$width} {
+        width: calc($width * 1%); // hack
+        margin: auto;
+
+        &.responsive {
+            @media screen and (max-width: 960px) {
+                width: 100%;
+            }
+        }
+    }
+}
+
+@for $width from 1 through 12 {
+    $final: calc($width * 100);
+    .wrapper-p-#{$final} {
+        width: $final + px;
+        margin: auto;
+
+        &.responsive {
+            @media screen and (max-width: 960px) {
+                width: 100%;
+            }
+        }
+    }
+}
+
+@for $width from 1 through 12 {
+    $final: calc($width * 100);
+    .width-p-#{$final} {
+        width: $final + px;
+
+        &.responsive {
+            @media screen and (max-width: 960px) {
+                width: 100%;
+            }
+        }
+    }
+    $final: calc($width * 10);
+    .width-c-#{$final} {
+        width: $final + 0%;
+
+        &.responsive {
+            @media screen and (max-width: 960px) {
+                width: 100%;
+            }
+        }
+    }
+}
+
+@for $height from 1 through 18 {
+    $final: calc($height * 100);
+    .height-p-#{$final} {
+        height: $final + px;
+
+        &.responsive {
+            @media screen and (max-width: 960px) {
+                width: 100%;
+            }
+        }
+    }
+    $final: calc($height * 10);
+    .height-c-#{$final} {
+        height: $final + 0%;
+
+        &.responsive {
+            @media screen and (max-width: 960px) {
+                width: 100%;
+            }
+        }
+    }
+}
+
+i.icon {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS',
+        sans-serif;
+
+    &.exclamation {
+        &::after {
+            content: '!';
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    }
+
+    &.arrow-right {
+        &::after {
+            content: '→';
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    }
+
+    &.rainbowed {
+        &::after {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            @include rainbow_gradient(45, 2);
+            background-size: 10px 20px;
+            animation: 8s linear 0s infinite h_scrolling_background_anim;
+        }
+    }
+}
+
+.title-banner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: $master_colour;
+    background-color: #ffffff;
+}
+
+body.mobile .whole-page {
+    height: calc(100vh - 120px);
+}
+
+.whole-page {
+    height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

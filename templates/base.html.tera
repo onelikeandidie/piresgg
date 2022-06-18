@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% block head %}
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="/static/css/master.css" />
+        {% if no_title %}
+        <title>pires.gg</title>
+        {% else %}
+        <title>{% block title %}{% endblock title %} - pires.gg</title>
+        {% endif %}
+        {% endblock head %}
+        <link rel="shortcut icon" href="/static/images/icon.x64.png" type="image/x-icon">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+        <link href="https://fonts.cdnfonts.com/css/kabel-bd" rel="stylesheet">
+    </head>
+    <body>
+        {# Navigation #}
+        <nav>
+            <div>
+                <div class="logo">
+                    <a href="/home">
+                        {# <span class="piresgg txt-epic txt-big"></span> #}
+                        <img src="/static/images/icon.svg" alt="">
+                    </a>
+                </div>
+                <span class="spacer"></span>
+                <ul class="items">
+                    <li class="no-mobile">
+                        <a href="/home">Home</a>
+                    </li><li>
+                        <a href="/guides"><span class="rainbow-underline">Find Guides!<i class="icon arrow-right"></i></span></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        {# Content #}
+        <div class="page-content">{% block content %}{% endblock content %}</div>
+        {# Footer #}
+    </body>
+    <script src="/static/js/script.js"></script>
+</html>
