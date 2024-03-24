@@ -2,7 +2,7 @@ use std::{path::PathBuf, sync::Mutex};
 
 use actix_files::NamedFile;
 use actix_web::{get, http::header::{ContentDisposition, DispositionType}, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
-use blog_server::states::{CacheState, TemplateState};
+use blog_server::{states::{CacheState, TemplateState}, Post};
 use serde::Deserialize;
 use tera::Context;
 
@@ -30,6 +30,7 @@ struct Config {
     port: Option<u16>,
     address: Option<String>,
     templates: Option<String>,
+    content: Option<String>,
 }
 
 #[actix_web::main]
@@ -44,10 +45,11 @@ async fn main() -> std::io::Result<()> {
     };
 
     let templates = config.templates.unwrap_or("frontend/templates".to_string());
-    let cache = CacheState {
-        posts: Mutex::new(Vec::new()),
-    };
     let template_state = TemplateState::new(&templates);
+    let all = Post::all(&config.content.unwrap_or("content".to_string()));
+    let cache = CacheState {
+        posts: Mutex::new(all),
+    };
 
     let cache_state = web::Data::new(cache);
     let template_state = web::Data::new(template_state);

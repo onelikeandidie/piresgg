@@ -65,26 +65,8 @@ impl TemplateState {
     }
     pub fn render(&self, template: &str, context: &tera::Context) -> Result<String, tera::Error> {
         let mut context = context.clone();
-        context.insert("debug", &DebugVars::new());
+        // Add any needed variables
         self.tera.render(template, &context)
-    }
-}
-
-#[derive(Serialize)]
-struct DebugVars {
-    vite: bool
-}
-
-impl DebugVars {
-    fn new() -> Self {
-        #[cfg(debug_assertions)] {
-            return Self {
-                vite: true
-            }
-        }
-        Self {
-            vite: false
-        }
     }
 }
 

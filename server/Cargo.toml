@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 actix-files = "0.6.5"
 actix-web = "4.5.1"
-chrono = "0.4.35"
+chrono = { version = "0.4.35", features = ["serde"] }
 pulldown-cmark = "0.10.0"
 rss = "2.0.7"
 serde = { version = "1.0.197", features = ["derive"] }
