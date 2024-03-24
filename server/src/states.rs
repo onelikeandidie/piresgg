@@ -1,4 +1,4 @@
-use std::{ffi::OsString, path::Path, sync::Mutex};
+use std::{collections::HashMap, ffi::OsString, path::Path, sync::Mutex};
 
 use serde::Serialize;
 
@@ -70,6 +70,6 @@ impl TemplateState {
     }
 }
 
-pub struct CacheState {
-    pub posts: Mutex<Vec<Post>>,
+pub struct PostsState {
+    pub posts: Mutex<HashMap<String, Post>>,
 }

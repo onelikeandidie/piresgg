@@ -1,0 +1,11 @@
+{# Import macros #}
+{% import "components/icons" as icons %}
+
+{% extends 'layouts/base' %}
+{% block content %}
+    <div class="container p-4 md:p-8">
+        <article class="prose prose-neutral dark:prose-invert">
+            {{ content | safe }}
+        </article>
+    </div>
+{% endblock content %}

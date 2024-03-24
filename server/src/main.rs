@@ -1,15 +1,52 @@
-use std::{path::PathBuf, sync::Mutex};
+use std::sync::Mutex;
 
 use actix_files::NamedFile;
 use actix_web::{get, http::header::{ContentDisposition, DispositionType}, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
-use blog_server::{states::{CacheState, TemplateState}, Post};
+use blog_server::{states::{PostsState, TemplateState}, Post};
+use pulldown_cmark::{Options, Parser};
 use serde::Deserialize;
 use tera::Context;
 
 #[get("/")]
-async fn hello(template: web::Data<TemplateState>) -> impl Responder {
-    let body = template.render("index", &Context::new()).unwrap();
+async fn hello(state: web::Data<PostsState>, template: web::Data<TemplateState>) -> impl Responder {
+    let posts = {
+        let posts = state.posts.lock().unwrap();
+        posts.clone()
+    };
+    let mut context = Context::new();
+    let posts: Vec<(String, Post)> = posts.into_iter().collect();
+    context.insert("posts", &posts);
+
+    let body = template.render("index", &context).unwrap();
     HttpResponse::Ok().body(body)
+}
+
+#[get("/post/{post}")]
+async fn render_post(req: HttpRequest, state: web::Data<PostsState>, template: web::Data<TemplateState>) -> impl Responder {
+    let post_slug = req.match_info().query("post");
+    let post = {
+        let posts = state.posts.lock().unwrap();
+        posts.get(post_slug).unwrap().clone()
+    };
+
+    #[cfg(debug_assertions)]
+    {
+        println!("Rendering {}:{:?}", post_slug, post.meta.clone());
+    }
+    
+    // Set up options and parser. Strikethroughs are not part of the CommonMark standard
+    // and we therefore must enable it explicitly.
+    let mut options = Options::empty();
+    options.insert(Options::ENABLE_STRIKETHROUGH);
+    let parser = Parser::new_ext(&post.content, options);
+
+    // Write to String buffer.
+    let mut html_output = String::new();
+    pulldown_cmark::html::push_html(&mut html_output, parser);
+
+    let mut context = Context::new();
+    context.insert("content", &html_output);
+    HttpResponse::Ok().body(template.render("post", &context).unwrap())
 }
 
 #[get("/public/{filename:.*}")]
@@ -47,7 +84,7 @@ async fn main() -> std::io::Result<()> {
     let templates = config.templates.unwrap_or("frontend/templates".to_string());
     let template_state = TemplateState::new(&templates);
     let all = Post::all(&config.content.unwrap_or("content".to_string()));
-    let cache = CacheState {
+    let cache = PostsState {
         posts: Mutex::new(all),
     };
 
@@ -58,6 +95,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(cache_state.clone())
             .app_data(template_state.clone())
             .service(serve_static)
+            .service(render_post)
             .service(hello)
     })
     .bind((

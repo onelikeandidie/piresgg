@@ -1,9 +1,21 @@
 {# Import macros #}
 {% import "components/icons" as icons %}
+{% import "components/buttons" as buttons %}
 
 {% extends 'layouts/base' %}
 {% block content %}
-    <div class="my-4 mx-auto">
-
+    <div class="container flex flex-col items-stretch gap-4 my-8">
+        {% for post in posts %}
+            <div class="flex gap-4">
+                <p class="text-neutral-600 dark:text-neutral-400 text-right basis-1/3 font-serif">
+                    {{ post.1.meta.date }}
+                </p>
+                <p class="flex-1 text-lg">
+                    {{ buttons::link(link="/post/" ~ post.0, label=post.1.meta.title) }}
+                    <span class="w-4 h-[1px] inline-block align-middle bg-black dark:bg-white"></span>
+                    {{ post.1.meta.description }}
+                </p>
+            </div>
+        {% endfor %}
     </div>
 {% endblock content %}
