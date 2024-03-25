@@ -7,7 +7,7 @@
 <head>
     <title>{% block title %}Blog{% endblock title %} {% block subtitle %}{% endblock %}</title>
     <link rel="stylesheet" href="/public/main.css">
-    <script type="javascript" src="/public/main.js"></script>
+    <script type="text/javascript" src="/public/main.js"></script>
     <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
 </head>
 
@@ -24,7 +24,7 @@
         </div>
     </nav>
     {% endblock %}
-    <div class="container">
+    <div>
         {% block content %}{% endblock content %}
     </div>
     {% block footer %}

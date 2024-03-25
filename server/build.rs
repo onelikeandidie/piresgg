@@ -3,10 +3,8 @@ use std::process::Command;
 fn main() {
     println!("cargo:rerun-if-changed=templates/");
     // Run tailwind for the templates
-    Command::new("npx")
+    Command::new("node_modules/.bin/tailwindcss")
         .args([
-            "--yes",
-            "tailwindcss",
             "-i",
             "frontend/tailwind.css",
             "-o",
@@ -15,11 +13,10 @@ fn main() {
         .status()
         .unwrap();
 
-    println!("cargo:rerun-if-changed=frontend/main.js");
-    Command::new("npx")
+    println!("cargo:rerun-if-changed=frontend/main.ts");
+    Command::new("node_modules/.bin/esbuild")
         .args([
-            "esbuild",
-            "frontend/main.js",
+            "frontend/main.ts",
             "--bundle",
             "--outfile=public/main.js"
         ])

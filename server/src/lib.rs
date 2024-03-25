@@ -6,6 +6,7 @@ use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 
 pub mod helpers;
+pub mod html;
 pub mod states;
 
 #[derive(Debug, Clone, Serialize)]
