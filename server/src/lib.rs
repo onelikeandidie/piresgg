@@ -21,7 +21,12 @@ pub struct PostMeta {
     pub date: NaiveDate,
     pub tags: Vec<String>,
     pub slug: String,
-    pub description: String
+    pub description: String,
+    #[serde(default)]
+    pub hidden: bool,
+    // TODO: Make this work with web states
+    // #[serde(default)]
+    // pub show_on_nav: bool,
 }
 
 impl Post {

@@ -1,7 +1,5 @@
 use std::{collections::HashMap, ffi::OsString, path::Path, sync::Mutex};
 
-use serde::Serialize;
-
 use crate::Post;
 
 pub struct TemplateState {
@@ -64,7 +62,7 @@ impl TemplateState {
         TemplateState { tera }
     }
     pub fn render(&self, template: &str, context: &tera::Context) -> Result<String, tera::Error> {
-        let mut context = context.clone();
+        let context = context.clone();
         // Add any needed variables
         self.tera.render(template, &context)
     }
@@ -72,4 +70,16 @@ impl TemplateState {
 
 pub struct PostsState {
     pub posts: Mutex<HashMap<String, Post>>,
+}
+
+pub struct CacheState {
+    pub cache: Mutex<HashMap<String, String>>,
+}
+
+impl CacheState {
+    pub fn new() -> Self {
+        CacheState {
+            cache: Mutex::new(HashMap::new()),
+        }
+    }
 }

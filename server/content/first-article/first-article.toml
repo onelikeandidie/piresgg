@@ -3,3 +3,4 @@ date = "2023-03-23"
 tags = ["tag1", "tag2", "tag3"]
 slug = "first-article"
 description = "My first article"
+hidden = true

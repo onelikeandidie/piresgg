@@ -1,4 +1,4 @@
-use pulldown_cmark::{Event, html, Parser, Tag};
+use pulldown_cmark::{Event, Parser};
 
 pub fn add_classes(parser: Parser) -> Vec<Event>
 {

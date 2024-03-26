@@ -1,0 +1,7 @@
+title = "About Me"
+date = "2023-03-26"
+tags = []
+slug = "about"
+description = "About me and this blog"
+# Hide this page from the home page
+hidden = true

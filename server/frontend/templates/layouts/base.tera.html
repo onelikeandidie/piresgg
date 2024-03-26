@@ -13,14 +13,14 @@
 
 <body class="antialiased dark:bg-neutral-900 dark:text-white">
     {% block navigation %}
-    <nav class="container px-4 md:px-0 md:mt-8 sm:flex sm:justify-between">
+    <nav class="container px-4 mt-2 md:px-0 md:mt-8 sm:flex sm:justify-between">
         <div class="text-left flex justify-start mt-4 gap-4">
             <span>{{ buttons::link(link="https://github.com/onelikeandidie", label="Pedro", target="_blank") }}'s thinking dripstone</span>
         </div>
         <div class="text-right flex justify-end mt-4 gap-4">
             {{ buttons::link(link="/", label="posts") }}
-            {{ buttons::link(link="/projects", label="projects") }}
-            {{ buttons::link(link="/about", label="about") }}
+            {{ buttons::link(link="/post/projects", label="projects") }}
+            {{ buttons::link(link="/post/about", label="about") }}
         </div>
     </nav>
     {% endblock %}
@@ -28,7 +28,7 @@
         {% block content %}{% endblock content %}
     </div>
     {% block footer %}
-    <footer class="text-neutral-600 dark:text-neutral-400 px-4 md:px-0 text-sm">
+    <footer class="text-neutral-600 dark:text-neutral-400 mb-2 px-4 md:px-0 text-sm">
         <div class="flex flex-col items-start justify-start gap-2 container">
             <p>
                 Source available on

@@ -2,7 +2,7 @@ use std::sync::Mutex;
 
 use actix_files::NamedFile;
 use actix_web::{get, http::header::{ContentDisposition, DispositionType}, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
-use blog_server::{states::{PostsState, TemplateState}, Post, html};
+use blog_server::{states::{PostsState, TemplateState, CacheState}, Post, html};
 use pulldown_cmark::{Options, Parser};
 use serde::Deserialize;
 use tera::Context;
@@ -14,7 +14,10 @@ async fn hello(state: web::Data<PostsState>, template: web::Data<TemplateState>)
         posts.clone()
     };
     let mut context = Context::new();
-    let posts: Vec<(String, Post)> = posts.into_iter().collect();
+    let posts: Vec<(String, Post)> = posts.into_iter()
+        .filter(|(_, post)| {
+            !post.meta.hidden
+        }).collect();
     context.insert("posts", &posts);
 
     let body = template.render("index", &context).unwrap();
@@ -22,42 +25,78 @@ async fn hello(state: web::Data<PostsState>, template: web::Data<TemplateState>)
 }
 
 #[get("/post/{post}")]
-async fn render_post(req: HttpRequest, state: web::Data<PostsState>, template: web::Data<TemplateState>) -> impl Responder {
-    let post_slug = req.match_info().query("post");
-    let post = {
-        let posts = state.posts.lock().unwrap();
-        posts.get(post_slug).unwrap().clone()
-    };
+async fn render_post(req: HttpRequest, posts: web::Data<PostsState>, cache: web::Data<CacheState>, template: web::Data<TemplateState>) -> impl Responder {
+    let (cache_hit, html_output) = {
+        let post_slug = req.match_info().query("post");
 
-    #[cfg(debug_assertions)]
-    {
-        println!("Rendering {}:{:?}", post_slug, post.meta.clone());
-    }
+        // Check if the post is in the cache
+        let cached_html = {
+            let cache = cache.cache.lock().unwrap();
+            cache.get(post_slug).map(|s| s.clone())
+        };
 
-    // Set up options and parser. Strikethroughs are not part of the CommonMark standard
-    // and we therefore must enable it explicitly.
-    let mut options = Options::empty();
-    options.insert(Options::ENABLE_STRIKETHROUGH);
-    let parser = Parser::new_ext(&post.content, options);
+        if let Some(html_output) = cached_html {
+            // Add cache to headers for debugging
+            #[cfg(debug_assertions)]
+            {
+                println!("Cache hit for {}", post_slug);
+            }
 
-    #[cfg(debug_assertions)]
-    {
-        let mut options = Options::empty();
-        options.insert(Options::ENABLE_STRIKETHROUGH);
-        let parser = Parser::new_ext(&post.content, options);
-        for event in parser {
-            println!("{:?}", event);
+            (true, html_output)
+        } else {
+            let post = {
+                let posts = posts.posts.lock();
+                posts.unwrap().get(post_slug).map(|p| p.clone())
+            };
+            if post.is_none() {
+                return HttpResponse::NotFound()
+                    .reason("Post not found")
+                    .finish();
+            }
+            let post = post.unwrap().clone();
+
+            #[cfg(debug_assertions)]
+            {
+                println!("Rendering {}:{:?}", post_slug, post.meta.clone());
+            }
+
+            // Set up options and parser. Strikethroughs are not part of the CommonMark standard
+            // and we therefore must enable it explicitly.
+            let mut options = Options::empty();
+            options.insert(Options::ENABLE_STRIKETHROUGH);
+            let parser = Parser::new_ext(&post.content, options);
+
+            #[cfg(debug_assertions)]
+            {
+                let mut options = Options::empty();
+                options.insert(Options::ENABLE_STRIKETHROUGH);
+                let parser = Parser::new_ext(&post.content, options);
+                for event in parser {
+                    println!("{:?}", event);
+                }
+            }
+
+            // Write to String buffer.
+            let parser = html::add_classes(parser);
+            let mut html_output = String::new();
+            pulldown_cmark::html::push_html(&mut html_output, parser.into_iter());
+
+            // Add to cache
+            {
+                let mut cache = cache.cache.lock().unwrap();
+                cache.insert(post_slug.to_string(), html_output.clone());
+            }
+
+            (false, html_output)
         }
-    }
-
-    // Write to String buffer.
-    let parser = html::add_classes(parser);
-    let mut html_output = String::new();
-    pulldown_cmark::html::push_html(&mut html_output, parser.into_iter());
-
+    };
     let mut context = Context::new();
     context.insert("content", &html_output);
-    HttpResponse::Ok().body(template.render("post", &context).unwrap())
+    let mut response = HttpResponse::Ok();
+    if cache_hit {
+        response.insert_header(("X-Cached-Post", "HIT"));
+    };
+    response.body(template.render("post", &context).unwrap())
 }
 
 #[get("/public/{filename:.*}")]
@@ -95,16 +134,18 @@ async fn main() -> std::io::Result<()> {
     let templates = config.templates.unwrap_or("frontend/templates".to_string());
     let template_state = TemplateState::new(&templates);
     let all = Post::all(&config.content.unwrap_or("content".to_string()));
-    let cache = PostsState {
+    let posts = PostsState {
         posts: Mutex::new(all),
     };
 
-    let cache_state = web::Data::new(cache);
+    let posts_state = web::Data::new(posts);
     let template_state = web::Data::new(template_state);
+    let cache_state = web::Data::new(CacheState::new());
     HttpServer::new(move || {
         App::new()
-            .app_data(cache_state.clone())
+            .app_data(posts_state.clone())
             .app_data(template_state.clone())
+            .app_data(cache_state.clone())
             .service(serve_static)
             .service(render_post)
             .service(hello)
