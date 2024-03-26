@@ -1,8 +1,16 @@
 use std::sync::Mutex;
 
 use actix_files::NamedFile;
-use actix_web::{get, http::header::{ContentDisposition, DispositionType}, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
-use blog_server::{states::{PostsState, TemplateState, CacheState}, Post, html};
+use actix_web::{
+    get,
+    http::header::{ContentDisposition, DispositionType},
+    web, App, HttpRequest, HttpResponse, HttpServer, Responder,
+};
+use blog_server::{
+    html,
+    states::{CacheState, PostsState, TemplateState},
+    Post,
+};
 use pulldown_cmark::{Options, Parser};
 use serde::Deserialize;
 use tera::Context;
@@ -14,18 +22,25 @@ async fn hello(state: web::Data<PostsState>, template: web::Data<TemplateState>)
         posts.clone()
     };
     let mut context = Context::new();
-    let posts: Vec<(String, Post)> = posts.into_iter()
-        .filter(|(_, post)| {
-            !post.meta.hidden
-        }).collect();
+    let posts: Vec<(String, Post)> = posts
+        .into_iter()
+        .filter(|(_, post)| !post.meta.hidden)
+        .collect();
     context.insert("posts", &posts);
 
     let body = template.render("index", &context).unwrap();
-    HttpResponse::Ok().body(body)
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(body)
 }
 
 #[get("/post/{post}")]
-async fn render_post(req: HttpRequest, posts: web::Data<PostsState>, cache: web::Data<CacheState>, template: web::Data<TemplateState>) -> impl Responder {
+async fn render_post(
+    req: HttpRequest,
+    posts: web::Data<PostsState>,
+    cache: web::Data<CacheState>,
+    template: web::Data<TemplateState>,
+) -> impl Responder {
     let (cache_hit, html_output) = {
         let post_slug = req.match_info().query("post");
 
@@ -49,9 +64,7 @@ async fn render_post(req: HttpRequest, posts: web::Data<PostsState>, cache: web:
                 posts.unwrap().get(post_slug).map(|p| p.clone())
             };
             if post.is_none() {
-                return HttpResponse::NotFound()
-                    .reason("Post not found")
-                    .finish();
+                return HttpResponse::NotFound().reason("Post not found").finish();
             }
             let post = post.unwrap().clone();
 
@@ -96,7 +109,9 @@ async fn render_post(req: HttpRequest, posts: web::Data<PostsState>, cache: web:
     if cache_hit {
         response.insert_header(("X-Cached-Post", "HIT"));
     };
-    response.body(template.render("post", &context).unwrap())
+    response
+        .content_type("text/html")
+        .body(template.render("post", &context).unwrap())
 }
 
 #[get("/public/{filename:.*}")]
@@ -150,10 +165,10 @@ async fn main() -> std::io::Result<()> {
             .service(render_post)
             .service(hello)
     })
-        .bind((
-            config.address.unwrap_or("127.0.0.1".to_string()),
-            config.port.unwrap_or(8000),
-        ))?
-        .run()
-        .await
+    .bind((
+        config.address.unwrap_or("127.0.0.1".to_string()),
+        config.port.unwrap_or(8000),
+    ))?
+    .run()
+    .await
 }
