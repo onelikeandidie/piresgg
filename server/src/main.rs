@@ -12,11 +12,12 @@ use blog_server::{
     Post,
 };
 use pulldown_cmark::{Options, Parser};
-use serde::Deserialize;
 use tera::Context;
+use blog_server::config::Config;
+use blog_server::feed::{Author, Entry};
 
 #[get("/")]
-async fn hello(state: web::Data<PostsState>, template: web::Data<TemplateState>) -> impl Responder {
+async fn home(state: web::Data<PostsState>, template: web::Data<TemplateState>) -> impl Responder {
     let posts = {
         let posts = state.posts.lock().unwrap();
         posts.clone()
@@ -127,12 +128,77 @@ async fn serve_static(req: HttpRequest) -> actix_web::Result<NamedFile> {
         }))
 }
 
-#[derive(Debug, Default, Deserialize)]
-struct Config {
-    port: Option<u16>,
-    address: Option<String>,
-    templates: Option<String>,
-    content: Option<String>,
+#[get("/feed.atom")]
+async fn feed(
+    config_state: web::Data<Config>,
+    posts: web::Data<PostsState>,
+    cache: web::Data<CacheState>,
+    template: web::Data<TemplateState>
+) -> impl Responder {
+    let config = config_state.get_ref().clone();
+    let feed = blog_server::feed::Feed::from(config.clone());
+
+    let posts = {
+        let posts = posts.posts.lock().unwrap();
+        posts.clone()
+    };
+    // Check if the post is in the cache
+    let cached_html = {
+        let cache = cache.cache.lock().unwrap();
+        cache.clone()
+    };
+
+    let posts: Vec<Entry> = posts
+        .into_iter()
+        .filter(|(_, post)| !post.meta.hidden)
+        .map(|(slug, post)| {
+            let cached_html = cached_html.get(&slug).map(|s| s.clone());
+            let html_output = if let Some(html_output) = cached_html {
+                html_output
+            } else {
+                // Set up options and parser. Strikethroughs are not part of the CommonMark standard
+                // and we therefore must enable it explicitly.
+                let mut options = Options::empty();
+                options.insert(Options::ENABLE_STRIKETHROUGH);
+                let parser = Parser::new_ext(&post.content, options);
+
+                // Write to String buffer.
+                let parser = html::add_classes(parser);
+                let mut html_output = String::new();
+                pulldown_cmark::html::push_html(&mut html_output, parser.into_iter());
+
+                // Add to cache
+                {
+                    let mut cache = cache.cache.lock().unwrap();
+                    cache.insert(slug.to_string(), html_output.clone());
+                }
+
+                html_output
+            };
+            Entry {
+                title: post.meta.title,
+                link: format!("{}/post/{}", config_state.host, slug),
+                alternate: None,
+                edit: None,
+                id: format!("{}/post/{}", config_state.host, slug),
+                published: Some(post.meta.date),
+                updated: Some(post.meta.date),
+                summary: post.meta.description,
+                content: html_output,
+                author: Author {
+                    name: config.feed.author.name.clone(),
+                    email: config.feed.author.email.clone(),
+                }
+            }
+        }).collect();
+    println!("{:?}", posts);
+
+    let mut context = Context::new();
+    context.insert("feed", &feed);
+    context.insert("entries", &posts);
+    HttpResponse::Ok()
+        .content_type("application/atom+xml")
+        .body(template.render("atom/feed", &context).unwrap())
 }
 
 #[actix_web::main]
@@ -145,10 +211,12 @@ async fn main() -> std::io::Result<()> {
     } else {
         Config::default()
     };
+    let config_state = web::Data::new(config.clone());
 
     let templates = config.templates.unwrap_or("frontend/templates".to_string());
     let template_state = TemplateState::new(&templates);
-    let all = Post::all(&config.content.unwrap_or("content".to_string()));
+    let content = config.content.unwrap_or("content".to_string());
+    let all = Post::all(&content);
     let posts = PostsState {
         posts: Mutex::new(all),
     };
@@ -158,17 +226,19 @@ async fn main() -> std::io::Result<()> {
     let cache_state = web::Data::new(CacheState::new());
     HttpServer::new(move || {
         App::new()
+            .app_data(config_state.clone())
             .app_data(posts_state.clone())
             .app_data(template_state.clone())
             .app_data(cache_state.clone())
             .service(serve_static)
             .service(render_post)
-            .service(hello)
+            .service(feed)
+            .service(home)
     })
-    .bind((
-        config.address.unwrap_or("127.0.0.1".to_string()),
-        config.port.unwrap_or(8000),
-    ))?
-    .run()
-    .await
+        .bind((
+            config.address.unwrap_or("127.0.0.1".to_string()),
+            config.port.unwrap_or(8000),
+        ))?
+        .run()
+        .await
 }

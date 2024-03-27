@@ -6,7 +6,7 @@
 {% block content %}
     <div class="container flex flex-col items-stretch gap-4 my-8">
         {% if not posts %}
-            <p class="text-lg">No posts yet.</p>
+            <p class="text-lg p-4">No posts yet.</p>
         {% endif %}
         {% for post in posts %}
             <div class="flex gap-4">

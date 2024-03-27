@@ -5,6 +5,8 @@ use std::{
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 
+pub mod config;
+pub mod feed;
 pub mod helpers;
 pub mod html;
 pub mod states;

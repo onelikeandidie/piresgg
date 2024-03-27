@@ -1,0 +1,14 @@
+host = "http://localhost:8000"
+port = 8000
+address = "127.0.0.1"
+templates = "templates"
+content = "content"
+
+[feed]
+title = "Feed"
+subtitle = "A blog"
+id = "a uuid, doesn't matter what"
+
+[feed.author]
+name = "Your Name"
+email = "it is required but you can put a fake one"

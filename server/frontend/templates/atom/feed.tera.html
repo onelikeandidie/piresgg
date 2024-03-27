@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+    <title>{{ feed.title }}</title>
+    {% if feed.subtitle %}
+        <subtitle>{{ feed.subtitle }}</subtitle>
+    {% endif %}
+    <link href="{{ feed.xml | safe }}" rel="self" />
+    <link href="{{ feed.link | safe }}" />
+    <id>{{ feed.id }}</id>
+    <updated>{{ feed.updated }}</updated>
+
+
+    {% for entry in entries %}
+        <entry>
+            <title>{{ entry.title }}</title>
+            <link href="{{ entry.link | safe }}"/>
+            {% if entry.alternate %}
+                <link rel="alternate" type="text/html" href="{{ entry.alternate | safe }}"/>
+            {% endif %}
+            {% if entry.edit %}
+                <link rel="edit" href="{{ entry.edit | safe }}"/>
+            {% endif %}
+            <id>{{ entry.id | safe }}</id>
+            {% if entry.published %}
+                <published>{{ entry.published }}</published>
+            {% endif %}
+            {% if entry.updated %}
+                <updated>{{ entry.updated }}</updated>
+            {% endif %}
+            <summary type="text">{{ entry.summary }}</summary>
+            <content type="xhtml">
+                <div xmlns="http://www.w3.org/1999/xhtml">
+                    {{ entry.content | safe }}
+                </div>
+            </content>
+            <author>
+                <name>{{ entry.author.name }}</name>
+                <email>{{ entry.author.email }}</email>
+            </author>
+        </entry>
+    {% endfor %}
+
+</feed>
