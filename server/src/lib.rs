@@ -1,5 +1,7 @@
 use std::{
-    collections::HashMap, ffi::OsStr, path::{Path, PathBuf}
+    collections::HashMap,
+    ffi::OsStr,
+    path::{Path, PathBuf},
 };
 
 use chrono::NaiveDate;
@@ -42,10 +44,7 @@ impl Post {
                 let entry = entry.path();
                 if entry.extension() == Some(OsStr::new("md")) {
                     let post = Post::from(entry.to_path_buf());
-                    posts.insert(
-                        post.meta.slug.clone(),
-                        post,
-                    );
+                    posts.insert(post.meta.slug.clone(), post);
                 }
             }
         }
@@ -67,7 +66,7 @@ impl From<PathBuf> for Post {
         let content = std::fs::read_to_string(&path).unwrap();
         let meta_file = path.with_extension("toml");
         let meta =
-            toml::from_str::<PostMeta>(&std::fs::read_to_string(&meta_file).unwrap()).unwrap();
+            toml::from_str::<PostMeta>(&std::fs::read_to_string(meta_file).unwrap()).unwrap();
 
         Self { meta, content }
     }

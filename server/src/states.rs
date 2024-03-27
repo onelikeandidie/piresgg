@@ -72,14 +72,7 @@ pub struct PostsState {
     pub posts: Mutex<HashMap<String, Post>>,
 }
 
+#[derive(Default)]
 pub struct CacheState {
     pub cache: Mutex<HashMap<String, String>>,
-}
-
-impl CacheState {
-    pub fn new() -> Self {
-        CacheState {
-            cache: Mutex::new(HashMap::new()),
-        }
-    }
 }
