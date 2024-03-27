@@ -13,7 +13,7 @@ use blog_server::{
     states::{CacheState, PostsState, TemplateState},
     Post,
 };
-use pulldown_cmark::{Options, Parser};
+use pulldown_cmark::Parser;
 use tera::Context;
 
 #[get("/")]
@@ -74,14 +74,12 @@ async fn render_post(
 
             // Set up options and parser. Strikethrough are not part of the CommonMark standard,
             // and we therefore must enable it explicitly.
-            let mut options = Options::empty();
-            options.insert(Options::ENABLE_STRIKETHROUGH);
+            let options = html::get_parser_options();
             let parser = Parser::new_ext(&post.content, options);
 
             #[cfg(debug_assertions)]
             {
-                let mut options = Options::empty();
-                options.insert(Options::ENABLE_STRIKETHROUGH);
+                let options = html::get_parser_options();
                 let parser = Parser::new_ext(&post.content, options);
                 for event in parser {
                     println!("{:?}", event);
@@ -160,8 +158,7 @@ async fn feed(
             } else {
                 // Set up options and parser. Strikethroughs are not part of the CommonMark standard
                 // and we therefore must enable it explicitly.
-                let mut options = Options::empty();
-                options.insert(Options::ENABLE_STRIKETHROUGH);
+                let options = html::get_parser_options();
                 let parser = Parser::new_ext(&post.content, options);
 
                 // Write to String buffer.
@@ -233,6 +230,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(posts_state.clone())
             .app_data(template_state.clone())
             .app_data(cache_state.clone())
+            .wrap(actix_web::middleware::Compress::default())
             .service(serve_static)
             .service(render_post)
             .service(feed)

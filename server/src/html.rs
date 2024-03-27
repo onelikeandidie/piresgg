@@ -1,4 +1,4 @@
-use pulldown_cmark::{Event, Parser};
+use pulldown_cmark::{Event, Options, Parser};
 
 pub fn add_classes(parser: Parser) -> Vec<Event> {
     parser
@@ -32,4 +32,13 @@ pub fn add_classes(parser: Parser) -> Vec<Event> {
             }
         })
         .collect()
+}
+
+
+pub fn get_parser_options() -> Options {
+    let mut options = Options::empty();
+    options.insert(Options::ENABLE_STRIKETHROUGH);
+    options.insert(Options::ENABLE_TASKLISTS);
+    options.insert(Options::ENABLE_TABLES);
+    options
 }

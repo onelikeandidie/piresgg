@@ -8,6 +8,7 @@ pub struct Config {
     pub templates: Option<String>,
     pub content: Option<String>,
     pub feed: FeedConfig,
+    pub header_titles: Option<Vec<String>>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize)]
