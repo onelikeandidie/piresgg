@@ -230,6 +230,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(posts_state.clone())
             .app_data(template_state.clone())
             .app_data(cache_state.clone())
+            .wrap(actix_web::middleware::Compress::default())
             .service(serve_static)
             .service(render_post)
             .service(feed)

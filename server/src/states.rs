@@ -82,6 +82,10 @@ impl TemplateState {
         // Add any needed variables
         let header_titles = self.config.header_titles.clone().unwrap_or(HEADER_TITLES.map(str::to_string).to_vec());
         context.insert("header_title", &fastrand::choice(header_titles));
+        #[cfg(debug_assertions)]
+        {
+            context.insert("debug", &true);
+        }
         self.tera.render(template, &context)
     }
 }

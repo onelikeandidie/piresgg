@@ -6,8 +6,13 @@
 
 <head>
     <title>{% block title %}Blog{% endblock title %} {% block subtitle %}{% endblock %}</title>
-    <link rel="stylesheet" href="/public/main.css">
-    <script type="text/javascript" src="/public/main.js"></script>
+    {% if debug %}
+        <link rel="stylesheet" href="/public/main.css">
+        <script type="text/javascript" src="/public/main.js"></script>
+    {% else %}
+        <link rel="stylesheet" href="/public/main.min.css">
+        <script type="text/javascript" src="/public/main.min.js"></script>
+    {% endif %}
     <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
     <!-- Viewport fix -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
