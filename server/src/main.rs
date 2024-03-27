@@ -40,7 +40,7 @@ async fn render_post(
     cache: web::Data<CacheState>,
     template: web::Data<TemplateState>,
 ) -> impl Responder {
-    let (cache_hit, html_output) = {
+    let (cache_hit, (html_output, meta)) = {
         let post_slug = req.match_info().query("post");
 
         // Check if the post is in the cache
@@ -49,14 +49,14 @@ async fn render_post(
             cache.get(post_slug).cloned()
         };
 
-        if let Some(html_output) = cached_html {
+        if let Some(cache) = cached_html {
             // Add cache to headers for debugging
             #[cfg(debug_assertions)]
             {
                 println!("Cache hit for {}", post_slug);
             }
 
-            (true, html_output)
+            (true, cache)
         } else {
             let post = {
                 let posts = posts.posts.lock();
@@ -96,13 +96,17 @@ async fn render_post(
             // Add to cache
             {
                 let mut cache = cache.cache.lock().unwrap();
-                cache.insert(post_slug.to_string(), html_output.clone());
+                cache.insert(
+                    post_slug.to_string(),
+                    (html_output.clone(), post.meta.clone()),
+                );
             }
 
-            (false, html_output)
+            (false, (html_output, post.meta.clone()))
         }
     };
     let mut context = Context::new();
+    context.insert("meta", &meta);
     context.insert("content", &html_output);
     let mut response = HttpResponse::Ok();
     if cache_hit {
@@ -151,7 +155,7 @@ async fn feed(
         .filter(|(_, post)| !post.meta.hidden)
         .map(|(slug, post)| {
             let cached_html = cached_html.get(&slug).cloned();
-            let html_output = if let Some(html_output) = cached_html {
+            let html_output = if let Some((html_output, _)) = cached_html {
                 html_output
             } else {
                 // Set up options and parser. Strikethroughs are not part of the CommonMark standard
@@ -168,7 +172,7 @@ async fn feed(
                 // Add to cache
                 {
                     let mut cache = cache.cache.lock().unwrap();
-                    cache.insert(slug.to_string(), html_output.clone());
+                    cache.insert(slug.to_string(), (html_output.clone(), post.meta.clone()));
                 }
 
                 html_output
@@ -212,8 +216,8 @@ async fn main() -> std::io::Result<()> {
     };
     let config_state = web::Data::new(config.clone());
 
-    let templates = config.templates.unwrap_or("frontend/templates".to_string());
-    let template_state = TemplateState::new(&templates);
+    let templates = config.clone().templates.unwrap_or("frontend/templates".to_string());
+    let template_state = TemplateState::new(&templates, config.clone());
     let content = config.content.unwrap_or("content".to_string());
     let all = Post::all(&content);
     let posts = PostsState {
