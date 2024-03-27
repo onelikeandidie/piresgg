@@ -3,6 +3,14 @@ use std::{collections::HashMap, ffi::OsString, path::Path, sync::Mutex};
 use crate::config::Config;
 use crate::{Post, PostMeta};
 
+const HEADER_TITLES: [&str; 5] = [
+    "thinking dripstone",
+    "thought emporium",
+    "mad ramblings",
+    "crazy thoughts",
+    "lucid dreams",
+];
+
 pub struct TemplateState {
     tera: tera::Tera,
     config: Config,
@@ -70,8 +78,10 @@ impl TemplateState {
         TemplateState { tera, config }
     }
     pub fn render(&self, template: &str, context: &tera::Context) -> Result<String, tera::Error> {
-        let context = context.clone();
+        let mut context = context.clone();
         // Add any needed variables
+        let header_titles = self.config.header_titles.clone().unwrap_or(HEADER_TITLES.map(str::to_string).to_vec());
+        context.insert("header_title", &fastrand::choice(header_titles));
         self.tera.render(template, &context)
     }
 }

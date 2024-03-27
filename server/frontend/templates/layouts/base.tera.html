@@ -18,7 +18,7 @@
     {% block navigation %}
     <nav class="container px-4 mt-2 md:px-0 md:mt-8 sm:flex sm:justify-between">
         <div class="text-left flex justify-start mt-4 gap-4">
-            <span>{{ buttons::link(link="https://github.com/onelikeandidie", label="Pedro", target="_blank") }}'s thinking dripstone</span>
+            <span>{{ buttons::link(link="/", label="Pedro", target="_blank") }}'s {{ header_title }}</span>
         </div>
         <div class="text-right flex justify-end mt-4 gap-4">
             {{ buttons::link(link="/", label="posts") }}
@@ -31,7 +31,7 @@
         {% block content %}{% endblock content %}
     </div>
     {% block footer %}
-    <footer class="container px-4 mt-8 md:px-0 sm:flex sm:justify-between">
+    <footer class="container px-4 my-8 md:px-0 sm:flex sm:justify-between">
         <div>
             <!-- Spacer for now -->
         </div>
