@@ -6,6 +6,8 @@ use actix_web::{
     http::header::{ContentDisposition, DispositionType},
     web, App, HttpRequest, HttpResponse, HttpServer, Responder,
 };
+use blog_server::config::Config;
+use blog_server::feed::{Author, Entry};
 use blog_server::{
     html,
     states::{CacheState, PostsState, TemplateState},
@@ -13,8 +15,6 @@ use blog_server::{
 };
 use pulldown_cmark::{Options, Parser};
 use tera::Context;
-use blog_server::config::Config;
-use blog_server::feed::{Author, Entry};
 
 #[get("/")]
 async fn home(state: web::Data<PostsState>, template: web::Data<TemplateState>) -> impl Responder {
@@ -30,9 +30,7 @@ async fn home(state: web::Data<PostsState>, template: web::Data<TemplateState>) 
     context.insert("posts", &posts);
 
     let body = template.render("index", &context).unwrap();
-    HttpResponse::Ok()
-        .content_type("text/html")
-        .body(body)
+    HttpResponse::Ok().content_type("text/html").body(body)
 }
 
 #[get("/post/{post}")]
@@ -42,27 +40,27 @@ async fn render_post(
     cache: web::Data<CacheState>,
     template: web::Data<TemplateState>,
 ) -> impl Responder {
-    let (cache_hit, html_output) = {
+    let (cache_hit, (html_output, meta)) = {
         let post_slug = req.match_info().query("post");
 
         // Check if the post is in the cache
         let cached_html = {
             let cache = cache.cache.lock().unwrap();
-            cache.get(post_slug).map(|s| s.clone())
+            cache.get(post_slug).cloned()
         };
 
-        if let Some(html_output) = cached_html {
+        if let Some(cache) = cached_html {
             // Add cache to headers for debugging
             #[cfg(debug_assertions)]
             {
                 println!("Cache hit for {}", post_slug);
             }
 
-            (true, html_output)
+            (true, cache)
         } else {
             let post = {
                 let posts = posts.posts.lock();
-                posts.unwrap().get(post_slug).map(|p| p.clone())
+                posts.unwrap().get(post_slug).cloned()
             };
             if post.is_none() {
                 return HttpResponse::NotFound().reason("Post not found").finish();
@@ -74,7 +72,7 @@ async fn render_post(
                 println!("Rendering {}:{:?}", post_slug, post.meta.clone());
             }
 
-            // Set up options and parser. Strikethroughs are not part of the CommonMark standard
+            // Set up options and parser. Strikethrough are not part of the CommonMark standard,
             // and we therefore must enable it explicitly.
             let mut options = Options::empty();
             options.insert(Options::ENABLE_STRIKETHROUGH);
@@ -98,13 +96,17 @@ async fn render_post(
             // Add to cache
             {
                 let mut cache = cache.cache.lock().unwrap();
-                cache.insert(post_slug.to_string(), html_output.clone());
+                cache.insert(
+                    post_slug.to_string(),
+                    (html_output.clone(), post.meta.clone()),
+                );
             }
 
-            (false, html_output)
+            (false, (html_output, post.meta.clone()))
         }
     };
     let mut context = Context::new();
+    context.insert("meta", &meta);
     context.insert("content", &html_output);
     let mut response = HttpResponse::Ok();
     if cache_hit {
@@ -133,7 +135,7 @@ async fn feed(
     config_state: web::Data<Config>,
     posts: web::Data<PostsState>,
     cache: web::Data<CacheState>,
-    template: web::Data<TemplateState>
+    template: web::Data<TemplateState>,
 ) -> impl Responder {
     let config = config_state.get_ref().clone();
     let feed = blog_server::feed::Feed::from(config.clone());
@@ -152,8 +154,8 @@ async fn feed(
         .into_iter()
         .filter(|(_, post)| !post.meta.hidden)
         .map(|(slug, post)| {
-            let cached_html = cached_html.get(&slug).map(|s| s.clone());
-            let html_output = if let Some(html_output) = cached_html {
+            let cached_html = cached_html.get(&slug).cloned();
+            let html_output = if let Some((html_output, _)) = cached_html {
                 html_output
             } else {
                 // Set up options and parser. Strikethroughs are not part of the CommonMark standard
@@ -170,7 +172,7 @@ async fn feed(
                 // Add to cache
                 {
                     let mut cache = cache.cache.lock().unwrap();
-                    cache.insert(slug.to_string(), html_output.clone());
+                    cache.insert(slug.to_string(), (html_output.clone(), post.meta.clone()));
                 }
 
                 html_output
@@ -188,9 +190,10 @@ async fn feed(
                 author: Author {
                     name: config.feed.author.name.clone(),
                     email: config.feed.author.email.clone(),
-                }
+                },
             }
-        }).collect();
+        })
+        .collect();
     println!("{:?}", posts);
 
     let mut context = Context::new();
@@ -213,8 +216,8 @@ async fn main() -> std::io::Result<()> {
     };
     let config_state = web::Data::new(config.clone());
 
-    let templates = config.templates.unwrap_or("frontend/templates".to_string());
-    let template_state = TemplateState::new(&templates);
+    let templates = config.clone().templates.unwrap_or("frontend/templates".to_string());
+    let template_state = TemplateState::new(&templates, config.clone());
     let content = config.content.unwrap_or("content".to_string());
     let all = Post::all(&content);
     let posts = PostsState {
@@ -223,7 +226,7 @@ async fn main() -> std::io::Result<()> {
 
     let posts_state = web::Data::new(posts);
     let template_state = web::Data::new(template_state);
-    let cache_state = web::Data::new(CacheState::new());
+    let cache_state = web::Data::new(CacheState::default());
     HttpServer::new(move || {
         App::new()
             .app_data(config_state.clone())
@@ -235,10 +238,10 @@ async fn main() -> std::io::Result<()> {
             .service(feed)
             .service(home)
     })
-        .bind((
-            config.address.unwrap_or("127.0.0.1".to_string()),
-            config.port.unwrap_or(8000),
-        ))?
-        .run()
-        .await
+    .bind((
+        config.address.unwrap_or("127.0.0.1".to_string()),
+        config.port.unwrap_or(8000),
+    ))?
+    .run()
+    .await
 }

@@ -2,6 +2,17 @@
 {% import "components/icons" as icons %}
 
 {% extends 'layouts/base' %}
+{% block subtitle %}{{ meta.title }}{% endblock subtitle %}
+{% block meta %}
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="{{ meta.title }}">
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="{{ meta.description }}">
+    <meta property="og:url" content="{{ 'post/' ~ meta.slug | url }}">
+    <!-- Twitter -->
+    <meta name="twitter:title" content="{{ meta.title }}">
+    <meta name="twitter:description" content="{{ meta.description }}">
+{% endblock meta %}
 {% block content %}
     <div class="container p-4 md:p-8">
         <article class="prose prose-neutral dark:prose-invert mx-auto">

@@ -1,13 +1,15 @@
 use std::{collections::HashMap, ffi::OsString, path::Path, sync::Mutex};
 
-use crate::Post;
+use crate::config::Config;
+use crate::{Post, PostMeta};
 
 pub struct TemplateState {
     tera: tera::Tera,
+    config: Config,
 }
 
 impl TemplateState {
-    pub fn new(templates: &str) -> Self {
+    pub fn new(templates: &str, config: Config) -> Self {
         let mut tera = tera::Tera::default();
         let ext = [".html.tera", ".html", ".tera", ".xml"];
         let mut files: Vec<(String, Option<String>)> = Vec::new();
@@ -59,7 +61,13 @@ impl TemplateState {
 
         tera.add_template_files(files).unwrap();
 
-        TemplateState { tera }
+        let base_url = config.host.clone();
+        tera.register_filter("url", move |value: &tera::Value, _: &HashMap<String, tera::Value>| {
+            let value = value.as_str().unwrap();
+            Ok(tera::Value::String(format!("{}/{}", base_url, value)))
+        });
+
+        TemplateState { tera, config }
     }
     pub fn render(&self, template: &str, context: &tera::Context) -> Result<String, tera::Error> {
         let context = context.clone();
@@ -72,14 +80,7 @@ pub struct PostsState {
     pub posts: Mutex<HashMap<String, Post>>,
 }
 
+#[derive(Default)]
 pub struct CacheState {
-    pub cache: Mutex<HashMap<String, String>>,
-}
-
-impl CacheState {
-    pub fn new() -> Self {
-        CacheState {
-            cache: Mutex::new(HashMap::new()),
-        }
-    }
+    pub cache: Mutex<HashMap<String, (String, PostMeta)>>,
 }

@@ -2,7 +2,7 @@
 {% import "components/icons" as icons %}
 {% import "components/buttons" as buttons %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <title>{% block title %}Blog{% endblock title %} {% block subtitle %}{% endblock %}</title>
@@ -11,6 +11,7 @@
     <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
     <!-- Viewport fix -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% block meta %}{% endblock meta %}
 </head>
 
 <body class="antialiased dark:bg-neutral-900 dark:text-white">
