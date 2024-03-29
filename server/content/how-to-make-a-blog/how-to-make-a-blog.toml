@@ -1,0 +1,10 @@
+title = "How to make a blog"
+date = "2023-03-29"
+tags = []
+slug = "how-to-make-a-blog"
+description = """
+A short post about how I made this blog using Actix, Tera, and Markdown. The small hurdles that I faced using Rust for
+web development and how I should probably just use a static site generator.
+"""
+# Hide this page from the home page
+hidden = false

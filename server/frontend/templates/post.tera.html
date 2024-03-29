@@ -18,5 +18,10 @@
         <article class="prose prose-neutral dark:prose-invert mx-auto">
             {{ content | safe }}
         </article>
+        <div>
+            <p class="text-neutral-600 dark:text-neutral-400 text-right mt-4 font-serif">
+                <i>Written on {{ meta.date }}</i>
+            </p>
+        </div>
     </div>
 {% endblock content %}

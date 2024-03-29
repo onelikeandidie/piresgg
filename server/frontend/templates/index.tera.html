@@ -9,8 +9,8 @@
             <p class="text-lg p-4">No posts yet.</p>
         {% endif %}
         {% for post in posts %}
-            <div class="flex gap-4">
-                <p class="text-neutral-600 dark:text-neutral-400 text-right basis-1/3 font-serif">
+            <div class="flex flex-col-reverse sm:flex-row gap-4 w-3/4 md:w-2/3 mx-auto">
+                <p class="text-neutral-600 dark:text-neutral-400 text-right basis-1/4 font-serif">
                     {{ post.1.meta.date }}
                 </p>
                 <p class="flex-1 text-lg">
