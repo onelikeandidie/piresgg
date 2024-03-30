@@ -40,7 +40,10 @@ fn main() {
                 path: Some(output.clone()),
                 preserve_attrs: false,
             };
-            optimize(&in_path, &out_path, &Default::default()).unwrap();
+            optimize(&in_path, &out_path, &oxipng::Options {
+                strip: oxipng::StripChunks::Safe,
+                ..Default::default()
+            }).unwrap();
         }
     }
 
