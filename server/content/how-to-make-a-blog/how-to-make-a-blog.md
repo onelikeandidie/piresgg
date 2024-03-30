@@ -6,7 +6,7 @@ or Cloudflare. That would be the sane way to go about creating a blog, or an
 even simpler way would be to use Medium, Tumblr or Blogger to create a blog
 without needing to host the pages or even ever touch a piece of code ever.
 
-Unfortunately, there is a parasite in my brain, that tells me to make
+Unfortunately, there is a parasite in my brain that tells me to make
 everything from scratch, and most of my projects suffer from that bug. I
 might address this in a future post, but for now I will give you the recipe
 for making this blog site.
@@ -88,9 +88,9 @@ libraries only (besides nginx).
 
 ![The home page of meetballs.org](/public/images/how-to-make-a-blog-screenie-3.png)
 
-And I made that site after making the other two Laravel-based CMS sites but
-wanted to explore more about creating a more dynamic site with Rust. I landed
-on some starting libraries:
+I made that site after making the other two Laravel-based CMS sites but wanted
+to explore more about creating a more dynamic site with Rust. I landed on some
+starting libraries:
 
 - [Actix-web](https://actix.rs/) - A simple web framework that just handles
     routing and handling multithreaded http requests and responses as well as
@@ -106,9 +106,9 @@ async fn hello() -> impl Responder {
 - [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark/) - An
     efficient and reliable parser for CommonMark which is the standard of
     markdown I am used to writing in.
-- [Tera](https://keats.github.io/tera/) - I was used to Twig, a couple of years
-    ago at work we used to use OpenCart, which has Twig as a templating
-    language. A base template for this post looks like this.
+- [Tera](https://keats.github.io/tera/) - At work, I used to use Twig for
+    templating since it was part of OpenCart and Tera's syntax is pretty
+    similar to Twig.
 
 ```twig
 {% extends 'layouts/base' %}
@@ -139,7 +139,7 @@ Another thing is that TailwindCSS is a npm package
 ([for now](https://tailwindcss.com/blog/tailwindcss-v4-alpha)) so I also had
 to add the tailwind processor to the build.rs file, a file that compiles as a
 separate executable that runs before building your program that does any extra
-actions needed for you program to run.
+actions needed for your program to run.
 
 After setting up all that, I found myself some fresh dopamine because the first
 page I created looked like this:
