@@ -31,6 +31,30 @@ function setupCodeBlocks() {
     });
 }
 
+function setupLazyImages() {
+    const images = document.querySelectorAll("img");
+    let observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                let img = entry.target as HTMLImageElement;
+                // Remove the lazy:// from the src
+                if (img.src.startsWith("lazy://")) {
+                    img.src = img.src.replace("lazy://", "");
+                    img.onerror = () => {
+                        img.src = "/public/assets/images/error.png";
+                    }
+                }
+                // Stop observing the image
+                observer.unobserve(img);
+            }
+        });
+    });
+    images.forEach((img) => {
+        observer.observe(img);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     setupCodeBlocks();
+    setupLazyImages();
 });

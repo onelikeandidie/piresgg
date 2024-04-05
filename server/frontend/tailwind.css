@@ -3,3 +3,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* I didn't want to do this, but I can't figure out an easy way to change
+  classes on the html that is produced by pulldown-cmark. I want the images
+  to have a 16/9 ratio so I'm going to use the @tailwind/aspect-ratio plugin
+  but apply it to the img tag when in prose mode.
+ */
+.prose p:has(>img) {
+    @apply block !aspect-w-16 !aspect-h-9;
+}
+.prose p:has(>img) img {
+    @apply my-0 w-full h-full object-center object-contain;
+}

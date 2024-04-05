@@ -6,6 +6,7 @@ use tera::Context;
 use crate::{html, Post};
 use crate::config::Config;
 use crate::feed::{Author, Entry};
+use crate::html::HTMLOptions;
 use crate::states::{CacheState, PostsState, TemplateState};
 
 #[get("/")]
@@ -79,7 +80,10 @@ pub async fn render_post(
             }
 
             // Write to String buffer.
-            let parser = html::add_classes(parser);
+            let parser = html::add_classes(parser, HTMLOptions {
+                lazy_images: true,
+                ..Default::default()
+            });
             let mut html_output = String::new();
             pulldown_cmark::html::push_html(&mut html_output, parser.into_iter());
 
@@ -199,7 +203,7 @@ pub async fn feed(
     };
     // Check if the post is in the cache
     let cached_html = {
-        let cache = cache.post_cache.lock().unwrap();
+        let cache = cache.feed_post_cache.lock().unwrap();
         cache.clone()
     };
 
@@ -208,7 +212,7 @@ pub async fn feed(
         .filter(|(_, post)| !post.meta.hidden)
         .map(|(slug, post)| {
             let cached_html = cached_html.get(&slug).cloned();
-            let html_output = if let Some((html_output, _)) = cached_html {
+            let html_output = if let Some(html_output) = cached_html {
                 html_output
             } else {
                 // Set up options and parser. Strikethroughs are not part of the CommonMark standard
@@ -217,14 +221,17 @@ pub async fn feed(
                 let parser = Parser::new_ext(&post.content, options);
 
                 // Write to String buffer.
-                let parser = html::add_classes(parser);
+                let parser = html::add_classes(parser, HTMLOptions {
+                    base_url: config_state.host.clone(),
+                    ..Default::default()
+                });
                 let mut html_output = String::new();
                 pulldown_cmark::html::push_html(&mut html_output, parser.into_iter());
 
                 // Add to cache
                 {
-                    let mut cache = cache.post_cache.lock().unwrap();
-                    cache.insert(slug.to_string(), (html_output.clone(), post.meta.clone()));
+                    let mut cache = cache.feed_post_cache.lock().unwrap();
+                    cache.insert(slug.to_string(), html_output.clone());
                 }
 
                 html_output

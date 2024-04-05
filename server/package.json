@@ -3,6 +3,7 @@
     "dev": "cargo watch --watch src --watch frontend --watch config.toml --watch content -x run"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.10",
     "autoprefixer": "^10.4.19",
     "esbuild": "^0.20.2",
