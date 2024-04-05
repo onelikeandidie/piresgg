@@ -43,6 +43,7 @@ async fn main() -> std::io::Result<()> {
             .service(serve_static)
             .service(render_post)
             .service(serve_tag)
+            .service(serve_tags)
             .service(feed)
             .service(home)
     })

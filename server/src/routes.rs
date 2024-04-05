@@ -37,7 +37,7 @@ pub async fn render_post(
 
         // Check if the post is in the cache
         let cached_html = {
-            let cache = cache.cache.lock().unwrap();
+            let cache = cache.post_cache.lock().unwrap();
             cache.get(post_slug).cloned()
         };
 
@@ -85,7 +85,7 @@ pub async fn render_post(
 
             // Add to cache
             {
-                let mut cache = cache.cache.lock().unwrap();
+                let mut cache = cache.post_cache.lock().unwrap();
                 cache.insert(
                     post_slug.to_string(),
                     (html_output.clone(), post.meta.clone()),
@@ -129,6 +129,47 @@ pub async fn serve_tag(
     HttpResponse::Ok().content_type("text/html").body(body)
 }
 
+#[get("/tags")]
+pub async fn serve_tags(
+    posts: web::Data<PostsState>,
+    cache: web::Data<CacheState>,
+    template: web::Data<TemplateState>,
+) -> impl Responder {
+    let tags = {
+        let tags = cache.tags_cache.lock().unwrap();
+        if tags.is_empty() {
+            let posts = posts.posts.lock().unwrap();
+            // Only show tags for non-hidden posts
+            let tags = posts
+                .values()
+                .filter(|post| !post.meta.hidden)
+                .flat_map(|post| post.meta.tags.clone())
+                .collect::<Vec<String>>();
+            // Count the number of times each tag appears
+            let tags: Vec<(String, usize)> = tags
+                .iter()
+                // This is kindof complicated, the fold function is like an
+                // accumulator in a for loop. It takes an initial value and a
+                // closure that takes the accumulator and the current value and
+                // returns the new accumulator. In this case, we're using it to
+                // count the number of times each tag appears.
+                .fold(std::collections::HashMap::new(), |mut acc, tag| {
+                    *acc.entry(tag.clone()).or_insert(0) += 1;
+                    acc
+                })
+                .into_iter()
+                .collect();
+            tags
+        } else {
+            tags.clone()
+        }
+    };
+    let mut context = Context::new();
+    context.insert("tags", &tags);
+    let body = template.render("tags", &context).unwrap();
+    HttpResponse::Ok().content_type("text/html").body(body)
+}
+
 #[get("/public/{filename:.*}")]
 pub async fn serve_static(req: HttpRequest) -> actix_web::Result<NamedFile> {
     let path: std::path::PathBuf = req.match_info().query("filename").parse().unwrap();
@@ -158,7 +199,7 @@ pub async fn feed(
     };
     // Check if the post is in the cache
     let cached_html = {
-        let cache = cache.cache.lock().unwrap();
+        let cache = cache.post_cache.lock().unwrap();
         cache.clone()
     };
 
@@ -182,7 +223,7 @@ pub async fn feed(
 
                 // Add to cache
                 {
-                    let mut cache = cache.cache.lock().unwrap();
+                    let mut cache = cache.post_cache.lock().unwrap();
                     cache.insert(slug.to_string(), (html_output.clone(), post.meta.clone()));
                 }
 
