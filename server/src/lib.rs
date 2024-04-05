@@ -11,6 +11,7 @@ pub mod config;
 pub mod feed;
 pub mod helpers;
 pub mod html;
+pub mod routes;
 pub mod states;
 
 #[derive(Debug, Clone, Serialize)]

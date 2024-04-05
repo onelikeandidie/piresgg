@@ -18,8 +18,18 @@
         <article class="prose prose-neutral dark:prose-invert mx-auto">
             {{ content | safe }}
         </article>
-        <div>
-            <p class="text-neutral-600 dark:text-neutral-400 text-right mt-4 font-serif">
+        <div class="flex justify-between mt-4">
+            {% if meta.tags %}
+            <span class="text-neutral-600 dark:text-neutral-400 font-serif italic">
+                {%- for tag in meta.tags -%}
+                    {{- buttons::tag(link="/tag/" ~ tag, label=tag) -}}
+                    {%- if not loop.last -%}
+                        <span class="">, </span>
+                    {%- endif -%}
+                {%- endfor -%}
+            </span>
+            {% endif %}
+            <p class="text-neutral-600 dark:text-neutral-400 text-right font-serif">
                 <i>Written on {{ meta.date }}</i>
             </p>
         </div>

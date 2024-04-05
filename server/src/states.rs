@@ -96,5 +96,7 @@ pub struct PostsState {
 
 #[derive(Default)]
 pub struct CacheState {
-    pub cache: Mutex<HashMap<String, (String, PostMeta)>>,
+    pub post_cache: Mutex<HashMap<String, (String, PostMeta)>>,
+    pub feed_post_cache: Mutex<HashMap<String, String>>,
+    pub tags_cache: Mutex<Vec<(String, usize)>>,
 }

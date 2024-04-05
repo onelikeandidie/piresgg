@@ -5,7 +5,7 @@
 <html lang="en">
 
 <head>
-    <title>{% block title %}Blog{% endblock title %} {% block subtitle %}{% endblock %}</title>
+    <title>{% block title %}Pedro's blog{% endblock title %} {% block subtitle %}{% endblock %}</title>
     {% if debug %}
         <link rel="stylesheet" href="/public/main.css">
         <script type="text/javascript" src="/public/main.js"></script>
@@ -23,10 +23,11 @@
     {% block navigation %}
     <nav class="container px-4 mt-2 md:px-0 md:mt-8 sm:flex sm:justify-between">
         <div class="text-left flex justify-start mt-4 gap-4">
-            <span>{{ buttons::link(link="/", label="Pedro", target="_blank") }}'s {{ header_title }}</span>
+            <span>{{ buttons::link(link="/", label="Pedro") }}'s {{ header_title }}</span>
         </div>
         <div class="text-right flex justify-end mt-4 gap-4">
             {{ buttons::link(link="/", label="posts") }}
+            {{ buttons::link(link="/tags", label="tags") }}
             {{ buttons::link(link="/post/projects", label="projects") }}
             {{ buttons::link(link="/post/about", label="about") }}
         </div>

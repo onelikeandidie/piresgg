@@ -1,6 +1,12 @@
-use pulldown_cmark::{Event, Options, Parser};
+use pulldown_cmark::{Event, Options, Parser, Tag};
 
-pub fn add_classes(parser: Parser) -> Vec<Event> {
+#[derive(Default)]
+pub struct HTMLOptions {
+    pub base_url: String,
+    pub lazy_images: bool,
+}
+
+pub fn add_classes(parser: Parser, options: HTMLOptions) -> Vec<Event> {
     parser
         .map(|event| {
             match event {
@@ -25,6 +31,19 @@ pub fn add_classes(parser: Parser) -> Vec<Event> {
                         //         id
                         //     })
                         // },
+                        Tag::Image { id, title, link_type, dest_url} => {
+                            let dest_url = if !dest_url.starts_with("http") {
+                                format!("{}/{}", options.base_url, dest_url.trim_start_matches('/'))
+                            } else {
+                                dest_url.to_string()
+                            };
+                            if !options.lazy_images {
+                                Event::Start(Tag::Image { id, title, link_type, dest_url: dest_url.into() })
+                            } else {
+                                let dest_url = format!("lazy://{}", dest_url);
+                                Event::Start(Tag::Image { id, title, link_type, dest_url: dest_url.into() })
+                            }
+                        }
                         tag => Event::Start(tag),
                     }
                 }

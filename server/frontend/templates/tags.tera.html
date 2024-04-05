@@ -1,0 +1,20 @@
+{# Import macros #}
+{% import "components/icons" as icons %}
+{% import "components/buttons" as buttons %}
+
+{% extends 'layouts/base' %}
+{% block content %}
+<div class="container flex flex-col items-stretch gap-4 my-8">
+    <p class="flex gap-4 w-3/4 md:w-2/3 mx-auto font-serif text-xl my-4">
+        {% for tag in tags %}
+        <span>
+            {{- buttons::tag(link="/tag/" ~ tag.0, label=tag.0) -}}
+            <span class="text-neutral-700 dark:text-neutral-300 ml-1">{{ tag.1 }}</span>
+        </span>
+        {% endfor %}
+    </p>
+    <p class="text-center text-neutral-700 dark:text-neutral-300 italic">
+        Click on a tag to see all posts with that tag
+    </p>
+</div>
+{% endblock content %}

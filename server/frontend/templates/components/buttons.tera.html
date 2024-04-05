@@ -3,3 +3,9 @@
         {{ label }}
     </a>
 {% endmacro  %}
+
+{%- macro tag(link, label) -%}
+    <a href="{{ link }}" class="text-inherit inline hover:underline">
+        {{- label -}}
+    </a>
+{%- endmacro %}
