@@ -107,6 +107,28 @@ pub async fn render_post(
         .body(template.render("post", &context).unwrap())
 }
 
+#[get("/tag/{tag}")]
+pub async fn serve_tag(
+    req: HttpRequest,
+    posts: web::Data<PostsState>,
+    template: web::Data<TemplateState>,
+) -> impl Responder {
+    let tag = req.match_info().query("tag");
+    let posts = {
+        let posts = posts.posts.lock().unwrap();
+        posts.clone()
+    };
+    let posts: Vec<(String, Post)> = posts
+        .into_iter()
+        .filter(|(_, post)| !post.meta.hidden && post.meta.tags.contains(&tag.to_string()))
+        .collect();
+    let mut context = Context::new();
+    context.insert("posts", &posts);
+    context.insert("tag", &tag);
+    let body = template.render("tag", &context).unwrap();
+    HttpResponse::Ok().content_type("text/html").body(body)
+}
+
 #[get("/public/{filename:.*}")]
 pub async fn serve_static(req: HttpRequest) -> actix_web::Result<NamedFile> {
     let path: std::path::PathBuf = req.match_info().query("filename").parse().unwrap();

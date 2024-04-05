@@ -42,6 +42,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(actix_web::middleware::Compress::default())
             .service(serve_static)
             .service(render_post)
+            .service(serve_tag)
             .service(feed)
             .service(home)
     })
