@@ -32,7 +32,7 @@ function setupCodeBlocks() {
 }
 
 function setupLazyImages() {
-    const images = document.querySelectorAll("img");
+    const images = document.querySelectorAll(".prose img");
     let observer = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -54,7 +54,55 @@ function setupLazyImages() {
     });
 }
 
+function createOverlay(): HTMLElement {
+    let overlay = document.createElement("div");
+    overlay.id = "overlay";
+    overlay.classList.add("hidden", "fixed", "top-0", "right-0", "bottom-0", "left-0", "bg-black", "bg-opacity-50", "flex", "justify-center", "items-center");
+    document.body.appendChild(overlay);
+
+    // Add some helper functions for the overlay
+    overlay.addEventListener("click", (e) => {
+        overlay.classList.add("hidden");
+        overlay.innerHTML = "";
+    });
+
+    return overlay;
+}
+
+function getOverlay(): HTMLElement {
+    let overlay = document.getElementById("overlay");
+    if (!overlay) {
+        overlay = createOverlay();
+    }
+    return overlay;
+}
+
+function createImagePopup(image: string): HTMLElement {
+    let overlay = getOverlay();
+    let image_wrapper = document.createElement("div");
+    image_wrapper.classList.add("max-w-full", "max-h-full");
+    let image_element = document.createElement("img");
+    image_element.src = image;
+    image_wrapper.append(image_element);
+    return image_wrapper;
+}
+
+function setupImagePopup() {
+    const images = document.querySelectorAll(".prose img") as NodeListOf<HTMLImageElement>;
+    images.forEach((img) => {
+        img.addEventListener("click", (e) => {
+            let image = img.src;
+            let image_element = createImagePopup(image);
+            let overlay = getOverlay();
+            overlay.append(image_element);
+            overlay.classList.remove("hidden");
+        });
+    });
+
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     setupCodeBlocks();
     setupLazyImages();
+    setupImagePopup();
 });
