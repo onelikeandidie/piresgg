@@ -17,6 +17,16 @@
                     {{ buttons::link(link="/post/" ~ post.0, label=post.1.meta.title) }}
                     <span class="w-4 h-[1px] inline-block align-middle bg-black dark:bg-white"></span>
                     {{ post.1.meta.description }}
+                    {% if post.1.meta.tags %}
+                        <span class="text-neutral-700 dark:text-neutral-300 block font-serif italic">
+                            {%- for tag in post.1.meta.tags -%}
+                                {{- buttons::tag(link="/tag/" ~ tag, label=tag) -}}
+                                {%- if not loop.last -%}
+                                    <span class="">, </span>
+                                {%- endif -%}
+                            {%- endfor -%}
+                        </span>
+                    {% endif %}
                 </p>
             </div>
         {% endfor %}
