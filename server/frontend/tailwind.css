@@ -15,3 +15,6 @@
 .prose p:has(>img) img {
     @apply my-0 w-full h-full object-center object-contain;
 }
+.prose pre:has(>code) {
+    @apply mx-0 md:-mx-8 lg:-mx-16 xl:-mx-32;
+}

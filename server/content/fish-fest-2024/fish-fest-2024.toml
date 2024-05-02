@@ -1,0 +1,10 @@
+title = "The making of Fishing for a Princess"
+date = "2023-04-09"
+tags = ["rust", "game-jam", "bevy", "game-dev"]
+slug = "fish-fest-2024"
+description = """
+A devlog for my game jam submission to the 2024 Fish Fest. I'm making a
+foddian-style game in Rust with the Bevy game engine.
+"""
+# Hide this page from the home page
+hidden = false
