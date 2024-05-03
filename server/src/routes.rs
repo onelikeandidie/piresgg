@@ -16,10 +16,11 @@ pub async fn home(state: web::Data<PostsState>, template: web::Data<TemplateStat
         posts.clone()
     };
     let mut context = Context::new();
-    let posts: Vec<(String, Post)> = posts
+    let mut posts: Vec<(String, Post)> = posts
         .into_iter()
         .filter(|(_, post)| !post.meta.hidden)
         .collect();
+    posts.sort_by(|(_, a), (_, b)| b.meta.date.cmp(&a.meta.date));
     context.insert("posts", &posts);
 
     let body = template.render("index", &context).unwrap();
@@ -122,10 +123,11 @@ pub async fn serve_tag(
         let posts = posts.posts.lock().unwrap();
         posts.clone()
     };
-    let posts: Vec<(String, Post)> = posts
+    let mut posts: Vec<(String, Post)> = posts
         .into_iter()
         .filter(|(_, post)| !post.meta.hidden && post.meta.tags.contains(&tag.to_string()))
         .collect();
+    posts.sort_by(|(_, a), (_, b)| b.meta.date.cmp(&a.meta.date));
     let mut context = Context::new();
     context.insert("posts", &posts);
     context.insert("tag", &tag);

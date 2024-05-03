@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 @import "highlight.js/styles/github-dark.css";
 
 @tailwind base;
@@ -14,4 +15,16 @@
 }
 .prose p:has(>img) img {
     @apply my-0 w-full h-full object-center object-contain;
+}
+.prose pre:has(>code) {
+    @apply mx-0 md:-mx-8 lg:-mx-16 xl:-mx-32;
+}
+.prose p:has(>code) code::before {
+    content: "";
+}
+.prose p:has(>code) code::after {
+    content: "";
+}
+.prose iframe {
+    @apply my-2;
 }

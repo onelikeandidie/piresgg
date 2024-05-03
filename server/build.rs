@@ -25,25 +25,43 @@ fn main() {
     for entry in WalkDir::new("content/images") {
         let entry = entry.unwrap();
         if entry.path().is_file() {
-            let entry = entry.path();
-            let in_path = oxipng::InFile::Path(entry.to_path_buf());
-            let output = public_images_dir.join(entry.file_name().unwrap());
-            // If the file already exists and is newer than the input, skip it
-            if output.exists() {
-                let in_meta = entry.metadata().unwrap();
-                let out_meta = output.metadata().unwrap();
-                if out_meta.modified().unwrap() > in_meta.modified().unwrap() {
-                    continue;
+            // Optimize png files
+            if entry.path().extension().is_some_and(|ext| ext == "png") {
+                let entry = entry.path();
+                let in_path = oxipng::InFile::Path(entry.to_path_buf());
+                // Get the relative file path from the content/images dir
+                let image_path = entry.to_string_lossy().to_string();
+                let image_path = image_path.strip_prefix("content/images/").unwrap();
+                let output = public_images_dir.join(image_path);
+                // If the file already exists and is newer than the input, skip it
+                if output.exists() {
+                    let in_meta = entry.metadata().unwrap();
+                    let out_meta = output.metadata().unwrap();
+                    if out_meta.modified().unwrap() > in_meta.modified().unwrap() {
+                        continue;
+                    }
                 }
+                // Make sure parent directory exists
+                std::fs::create_dir_all(output.parent().unwrap()).unwrap();
+                let out_path = oxipng::OutFile::Path {
+                    path: Some(output.clone()),
+                    preserve_attrs: false,
+                };
+                optimize(&in_path, &out_path, &oxipng::Options {
+                    strip: oxipng::StripChunks::Safe,
+                    ..Default::default()
+                }).unwrap();
             }
-            let out_path = oxipng::OutFile::Path {
-                path: Some(output.clone()),
-                preserve_attrs: false,
-            };
-            optimize(&in_path, &out_path, &oxipng::Options {
-                strip: oxipng::StripChunks::Safe,
-                ..Default::default()
-            }).unwrap();
+            // Copy over webp files
+            if entry.path().extension().is_some_and(|ext| ext == "webp") {
+                // Get the relative file path from the content/images dir
+                let image_path = entry.path().to_string_lossy().to_string();
+                let image_path = image_path.strip_prefix("content/images/").unwrap();
+                let output = public_images_dir.join(image_path);
+                // Make sure parent directory exists
+                std::fs::create_dir_all(output.parent().unwrap()).unwrap();
+                std::fs::copy(entry.path(), output).unwrap();
+            }
         }
     }
 
