@@ -150,7 +150,7 @@ fn spawn_player(mut commands: Commands) {
 Skipping over a couple of details like loading sprites, hard coding platforms
 and handling input I arrived at my first draft.
 
-<iframe src="lazy://https://www.youtube-nocookie.com/embed/pwzNS051-gY?si=Sns_4tPoUy4otqjO"
+<iframe src="https://www.youtube-nocookie.com/embed/pwzNS051-gY?si=Sns_4tPoUy4otqjO"
     width="560" height="315"
     title="YouTube video player" frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -167,7 +167,7 @@ The player fish has a couple of features:
 
 Maia had drawn some fish for me, so I put it in the game and...
 
-<iframe src="lazy://https://www.youtube-nocookie.com/embed/DNBnluRCflU?si=mjrMEq-ZtPksP0Z7"
+<iframe src="https://www.youtube-nocookie.com/embed/DNBnluRCflU?si=mjrMEq-ZtPksP0Z7"
     width="560" height="315"
     title="YouTube video player" frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -333,7 +333,7 @@ this type of stuff I go all over it on
 [my stream](https://youtu.be/pBtzOZ-Odz4), most of the process of making this
 editor is on there. Loading my test map I ended up with this.
 
-<iframe src="lazy://https://www.youtube-nocookie.com/embed/EFW5W8PPH94?si=xXVyTZXqtAcWDbDv"
+<iframe src="https://www.youtube-nocookie.com/embed/EFW5W8PPH94?si=xXVyTZXqtAcWDbDv"
     width="560" height="315"
     title="YouTube video player" frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -355,7 +355,7 @@ while I asked Maia to make the final map.
 Here's the clip I have from the developer speedrun I made of the release
 version.
 
-<iframe src="lazy://https://www.youtube-nocookie.com/embed/BW6Of2w7y-4?si=hqpQjBxc60FOw1Jt"
+<iframe src="https://www.youtube-nocookie.com/embed/BW6Of2w7y-4?si=hqpQjBxc60FOw1Jt"
     width="560" height="315"
     title="YouTube video player" frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -481,7 +481,7 @@ repeatedly or not sending jump packets for the uncontrolled jumps... Here's an
 easy peek into my bugs, while testing with multiple clients they got confused
 on which is which.
 
-<iframe src="lazy://https://www.youtube-nocookie.com/embed/6QuaQjD9As8?si=ZfIQCxNE0cS8n_6t"
+<iframe src="https://www.youtube-nocookie.com/embed/6QuaQjD9As8?si=ZfIQCxNE0cS8n_6t"
     width="560" height="315"
     title="YouTube video player" frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -489,7 +489,7 @@ on which is which.
     allowfullscreen>
 </iframe>
 
-<iframe src="lazy://https://www.youtube-nocookie.com/embed/LYcC8o4xFqE?si=JqAZGy9BaVC8y21t"
+<iframe src="https://www.youtube-nocookie.com/embed/LYcC8o4xFqE?si=JqAZGy9BaVC8y21t"
     width="560" height="315"
     title="YouTube video player" frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -500,7 +500,7 @@ on which is which.
 I got a few of my friends to rage at the game with me and most of them quit
 after the first few jumps.
 
-<iframe src="lazy://https://www.youtube-nocookie.com/embed/CX0PyHM9qCg?si=VdkWuSnfGsOzYe-3"
+<iframe src="https://www.youtube-nocookie.com/embed/CX0PyHM9qCg?si=VdkWuSnfGsOzYe-3"
     width="560" height="315"
     title="YouTube video player" frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
