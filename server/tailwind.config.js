@@ -15,6 +15,9 @@ module.exports = {
                     lg: "768px",
                     xl: "880px"
                 }
+            },
+            fontFamily: {
+                mono: ["JetBrains Mono", "monospace", "ui-monospace"],
             }
         }
     },

@@ -22,6 +22,10 @@ function setupCodeBlocks() {
         // Get the language name
         let language = languageClass.replace("language-", "");
         console.log(language)
+        // Check if the language is supported
+        if (!hljs.getLanguage(language)) {
+            return;
+        }
         let html = hljs.highlight(
             block.innerText,
             { language: language }
@@ -51,6 +55,26 @@ function setupLazyImages() {
     });
     images.forEach((img) => {
         observer.observe(img);
+    });
+}
+
+function setupLazyIframes() {
+    const iframes = document.querySelectorAll(".prose iframe");
+    let observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                let iframe = entry.target as HTMLIFrameElement;
+                // Remove the lazy:// from the src
+                if (iframe.src.startsWith("lazy://")) {
+                    iframe.src = iframe.src.replace("lazy://", "");
+                }
+                // Stop observing the iframe
+                observer.unobserve(iframe);
+            }
+        });
+    });
+    iframes.forEach((iframe) => {
+        observer.observe(iframe);
     });
 }
 
@@ -104,5 +128,6 @@ function setupImagePopup() {
 document.addEventListener("DOMContentLoaded", () => {
     setupCodeBlocks();
     setupLazyImages();
+    setupLazyIframes();
     setupImagePopup();
 });
