@@ -1,12 +1,12 @@
 # The Making of Fishing for a Princess
 
 I've always liked foddian games, the simple controls and mechanics make these
-games easy to learn but take time to master and complete. They are skill-based
-games where the amount of time you play the game directly influences how good
-you are at the game. Games like this are of course the hit title foddian game
-_Getting Over It with Bennett Foddy_ which reintroduced the genre back in 2017,
-_Pogostuck_ with its multiplayer climbing and _Jump King_ which has my
-favourite style between these.
+easy to learn but take time to master and complete. They are skill-based where
+the amount of time you play them directly influences how good you are at the
+game. Games like this are of course the hit title _Getting Over It with Bennett
+Foddy_ which reintroduced the genre back in 2017, _Pogostuck_ with its
+multiplayer climbing and _Jump King_ which has my favourite style between
+these.
 
 Although I've never completed _Pogostuck_ or _Jump King_ these are my favourite
 games out of the bunch, I love the rageful climb with my friends in _Pogostuck_
@@ -38,11 +38,12 @@ ingredient, multiplayer.
 ## A rough first shape
 
 I started experimenting with my favourite game engine
-[Bevy](https://bevyengine.org/) and started by getting a fish placeholder
+[Bevy](https://bevyengine.org/) and by getting a fish placeholder
 asset. _Bevy_ is an Entity-Component-System engine, meaning everything fits
 into this structure where an Entity has Components and Systems update those
-components. I like this because it keeps me from writing everything in one
-place.
+components. I very much enjoy coding this way, it lets me group related
+systems and components into the same file. For example, all the multiplayer
+ECS is inside the multiplayer.rs file.
 
 It's quite simple to understand, let me give you a quick code introduction.
 
@@ -110,9 +111,9 @@ see a window open and your terminal will spam the player's position constantly
 increasing on the x coordinate.
 
 Bevy's coordinate system is different from Unity and Unreal engine, it's easier
-to explain with an image, I found this one before by
-[@FreyaHomer](https://www.youtube.com/@Acegikmo) which shows better how it
-works.
+to explain with an image, this one by
+[@FreyaHomer](https://www.youtube.com/@Acegikmo) gives a good explanation of
+it.
 
 ![Bevy Coordinate System](/public/images/fish-fest-2024/handedness.webp)
 
@@ -344,7 +345,7 @@ I don't know if you can see very well but on that video the time is **22:05**,
 with 2 hours left and nerves of steel, me and Maia tried our best to smooth the
 edges of our game before posting it to the Game Jam.
 
-## The last hour of submission
+## One hour before deadline
 
 Before making the map, my plan showed slopes and a princess. I never got to
 implementing those neither on the editor nor the game. I also wanted to

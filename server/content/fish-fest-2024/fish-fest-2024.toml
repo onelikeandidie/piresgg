@@ -7,4 +7,4 @@ A devlog for my game jam submission to the 2024 Fish Fest. I'm making a
 foddian-style game in Rust with the Bevy game engine.
 """
 # Hide this page from the home page
-hidden = true
+hidden = false
