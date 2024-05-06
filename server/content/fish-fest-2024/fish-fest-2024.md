@@ -118,9 +118,9 @@ it.
 ![Bevy Coordinate System](/public/images/fish-fest-2024/handedness.webp)
 
 One thing I've learnt from my previous game dev attempts is that you should
-never write your own physics, so I decided to use a physics library that has
-direct bevy support [Rapier](https://rapier.rs/). To plugin it in, all I have
-to do is add the plugin it exposes.
+never write your own physics, so I decided to use a library that has direct
+bevy support [Rapier](https://rapier.rs/). To plug it in, all I have to do
+is add the plugin it exposes.
 
 ```rust
 // ...
@@ -193,8 +193,8 @@ to load. Easier to show an image of my plan shown on stream around
 
 ![Fish Editor Plan](/public/images/fish-fest-2024/fish_editor_plan.webp)
 
-Using [egui](https://www.egui.rs/) I could load an image and create some menus
-and created the structure for our map files.
+Using [egui](https://www.egui.rs/) I could load an image and create menus to
+add colliders and objects. I then defined my map file structure.
 
 ```rust
 pub struct MapFile {
@@ -246,8 +246,8 @@ pub enum MapObjectType {
 ```
 
 With this structure complete I started making the map editor. Egui is an
-immediate-mode renderer. This means everything is updated every frame the
-window is painted, this makes it really easy to manage state, at least for me.
+immediate-mode renderer. This means the UI updates every frame the window is
+painted, this makes it really easy to manage state, at least for me.
 Here's an example directly from their [README](https://github.com/emilk/egui)
 file.
 
@@ -270,11 +270,13 @@ fn render(ctx: &egui::Context, name: &mut String, age: &mut i32) {
 }
 ```
 
+![Image from the example code in egui README](https://github.com/emilk/egui/blob/master/media/demo.gif?raw=true)
+
 The above code won't actually render anything since egui is a rendering library
-but does not include a window creator so that it can be plugged into any
-project. Using another crate
-[eframe](https://github.com/emilk/egui/tree/master/crates/eframe) to create a
-window and run a loop.
+and does not have any window creation utilities. The winit (window initializer)
+crate provided by egui developers is
+[eframe](https://github.com/emilk/egui/tree/master/crates/eframe) that will
+manage the control loop and lifetime of the application.
 
 After initializing the window and creating a state to hold all the colliders I
 had created an editor only a mother would love.
@@ -352,8 +354,8 @@ implementing those neither on the editor nor the game. I also wanted to
 implement multiplayer but with 1 hour left all I could do was kill some bugs
 while I asked Maia to make the final map.
 
-Here's the clip I have from the developer speedrun I made of the release
-version.
+Below is the developer speedrun from the version that was submitted to the game
+jam.
 
 <iframe src="https://www.youtube-nocookie.com/embed/BW6Of2w7y-4?si=hqpQjBxc60FOw1Jt"
     width="560" height="315"
@@ -514,7 +516,7 @@ Maia. I'll see you next time when I have time to make some more posts.
 
 - 0.4.0 - Map Improvements
   - I want to have more map creation options to make more complex and difficult
-  maps.
+  maps
 - 0.5.0 - New Online Features
   - A couple more online features to make it a little more interesting even
   when you're not directly playing with other players
@@ -522,3 +524,8 @@ Maia. I'll see you next time when I have time to make some more posts.
   - Add basic and advanced scripting abilities and a site to share maps
 
 🐟 👋
+
+---
+
+_This article was updated on the 6th May 2024 to fix some typos and some of the
+wording._
