@@ -5,21 +5,18 @@ least complete and proud of while also being categorized.
 
 ## Web projects
 
+- [Wikistocks](https://wikistocks.pires.gg) - A fictional stock exchange game
+    in which stock prices are derived from Wikipedia page view statistics and
+    some other modifiers. This has been my most complex project yet, I can't
+    wait to write all about it soon™️. It's currently in an open beta and I am
+    all ears for some suggestions and advice.
 - [meetballs.org](https://github.com/onelikeandidie/meetballs.org) - A website
     listing projects and sessions for the meetballs community. The projects can
     be the script from the host of the session or a project that was worked on
     the meetup.
-- [Doky CMS PHP](https://github.com/onelikeandidie/doky-cms.php) - A
-    laravel-based CMS that syncs with a git repository and serves the content 
-    of the repository. When first loaded, it will clone the repository and then
-    pull the changes. The content will be written to the database and is
-    available to be edited on the frontend by logged in users. It supports user 
-    authentication and role permissions. The database can be synced back to the
-    git repository by a logged in admin. The main idea is to have a CMS that 
-    can be used by developers and non-developers. A fork is used in production
-    for [Auto Finesse Help Center](https://help.autofinesse.com), which at the
-    time of writing has no public documentation and only has internal staff
-    documentation.
+- [sudopresent](https://sudopresent.com) - A tool to make presentations using
+    ol' html, css and javascript with a built-in text editor and plugins for
+    your favourite IDE. Still a big work in progress but it'll get there.
 - [This blog](https://github.com/onelikeandidie/piresgg) - This blog, you can
     learn a little about it in the [about page](/post/about).
 
@@ -39,6 +36,10 @@ least complete and proud of while also being categorized.
 
 ## Games
 
+- [Fishing for a Princess](https://onelikeandidie.itch.io/fishing-for-a-princess) - A
+    multiplayer hopping game to get to the top of the map you're playing. It
+    supports custom maps (with a separate map editor) and playing on custom
+    maps with other players.
 - [BattleShipGame](https://github.com/onelikeandidie/BattleShipGame) - My final
     project for university, a battleship game written in Java. It has a GUI and
     is fully software-rendered. It includes the project report that I wrote for

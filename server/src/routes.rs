@@ -152,7 +152,7 @@ pub async fn serve_tags(
                 .flat_map(|post| post.meta.tags.clone())
                 .collect::<Vec<String>>();
             // Count the number of times each tag appears
-            let tags: Vec<(String, usize)> = tags
+            let mut tags: Vec<(String, usize)> = tags
                 .iter()
                 // This is kindof complicated, the fold function is like an
                 // accumulator in a for loop. It takes an initial value and a
@@ -165,6 +165,7 @@ pub async fn serve_tags(
                 })
                 .into_iter()
                 .collect();
+            tags.sort();
             tags
         } else {
             tags.clone()
