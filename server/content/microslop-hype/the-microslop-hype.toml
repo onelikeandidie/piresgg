@@ -1,0 +1,10 @@
+title = "Microslop Copilot and AI Hype"
+date = "2026-04-26"
+tags = ["ai","slop"]
+slug = "microslop-copilot-and-ai-hype"
+description = """
+How is it possible we got to this point of slop that we have to put it in
+every single product, Microslop? Also, my AI journey until now.
+"""
+# Hide this page from the home page
+hidden = false
