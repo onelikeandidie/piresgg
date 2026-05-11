@@ -1,5 +1,6 @@
 import hljs from "highlight.js/lib/core";
 import rust from "highlight.js/lib/languages/rust";
+import c from "highlight.js/lib/languages/c";
 import markdown from "highlight.js/lib/languages/markdown";
 import twig from "highlight.js/lib/languages/twig";
 import ini from "highlight.js/lib/languages/ini";
@@ -8,6 +9,7 @@ import commonLisp from "highlight.js/lib/languages/lisp";
 
 // Only load stuff we actually use plz
 hljs.registerLanguage("rust", rust);
+hljs.registerLanguage("c", c);
 hljs.registerLanguage("markdown", markdown);
 hljs.registerLanguage("twig", twig);
 hljs.registerLanguage("ini", ini);
