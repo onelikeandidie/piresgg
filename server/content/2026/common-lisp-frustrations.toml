@@ -3,4 +3,4 @@ date = "2026-05-11"
 tags = ["lisp","rant"]
 slug = "2026-common-lisp-frustrations"
 description = "I just wanted to rant a bit about trying to even use common lisp to make Wikistock bot templates."
-hidden = true
+hidden = false
