@@ -420,7 +420,7 @@ your program, so I wanted to try it out by importing `dexator`.
 ![A screenshot of Mine, the same as before but I added an import for dexator
 through the quicklisp. On the REPL section, an error can be seen showing that
 QL package does not exist.
-](/public/images/2026/common-lisp-frustrations/mine-showoff.webp)
+](/public/images/2026/common-lisp-frustrations/mine-ql-error.webp)
 
 `Package QL does not exist.`
 
