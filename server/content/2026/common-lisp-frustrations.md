@@ -199,7 +199,7 @@ that I can use nix to manage dependencies. I loaded `cl-dotenv` like so:
 ````
 
 Then I loaded this into the REPL using `sbcl --load src/ws-bot.lisp` after
-adding `WS_HOST=Hello World` to my `.env` file and everything worked as
+adding `WS_HOST=6769420` to my `.env` file and everything worked as
 expected.
 
 ````
