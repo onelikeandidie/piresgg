@@ -13,7 +13,7 @@ I've completed templates for:
 It's been fun learning go and relearning python so I wanted to try and make a
 template in a language I am not at all familiar with; Common Lisp.
 
-Common Lisp is a Lisp programming language, it has a very unfamiliar syntax to
+Common Lisp is a lisp programming language, it has a very unfamiliar syntax to
 me but although it looked a little foreign, I was ready to try my hand at
 learning it. I found a lot of users recommending
 [The Common Lisp Cookbook](https://lispcookbook.github.io/cl-cookbook/) so
@@ -130,8 +130,8 @@ NIL
 
 These 2 programs are equivalent in C and Common Lisp. The lisp syntax requires
 you as the developer to implicitly spell out when each statement starts and
-ends with the round parentisis. Also, the `let` keyword is how you define
-scoped variables, anything inside the "form" inside those parentisis can access
+ends with the round parentesis. Also, the `let` keyword is how you define
+scoped variables, anything inside the "form" inside those parentesis can access
 those variables. If you try to access `a` outside these forms, it is not
 defined;
 
@@ -175,11 +175,11 @@ the bottom sequentially.
 
 Back to using lisp. My code editor is [helix editor](https://helix-editor.com),
 it's a [kakoune](https://kakoune.org) inspired editor with pretty sensible
-built-in configuration for a bunch of languages. Even came with syntax
-highlighting for Lisp, but it was missing a language server configuration for
-lisp. I said to myself "that's ok, you've made a bot template in assembly
-without a language server. lisp can't be that hard" so I stated programming.
-It actually went well at the beginning, I learnt that SBCL includes a
+built-in configuration for a bunch of languages. It even came with syntax
+highlighting for lisp, but it was missing a language server configuration for
+lisp. I said to myself "That's ok, you've made a bot template in assembly
+without a language server. Lisp can't be that hard" so I stated programming.
+It actually went well in the beginning, I learnt that SBCL includes a
 package manager called ASDF that is integrated with nix (thanks nix devs) so
 that I can use nix to manage dependencies. I loaded `cl-dotenv` like so:
 
@@ -255,9 +255,9 @@ it till the end of the session.
 ````
 
 If you thought this has been smooth sailing so far, this is where I hit a road
-block. Loading this into the SBCL I get a garbled mess of errors. Honestly, I
+block. Loading this into the SBCL I got a garbled mess of errors. Honestly, I
 previously thought JavaScript errors were the worst but now that I tried Common
-Lisp, I can see how it could be worse.
+Lisp, I can see how it could be worse:
 
 ````
 ❯ sbcl --load src/ws-bot.lisp
@@ -326,11 +326,11 @@ however... is not as "fine". I really wanted an LSP so that I can understand
 where the problem is comming from as the REPL is giving me Minecraft Enchanting
 Table type error messages.
 
-The only Language Server I could find that was program agnostic (could work
-with any IDE that had the standard language server implementation) was made
-with lisp for lisp. Naturally, I decided to download it, the name is `cl-lsp`.
-The instructions said to load it using `roswell`, a different package manager
-for Common Lisp that isn't included in SBCL.
+The only Language Server I could find that was program agnostic (that could
+work with any IDE that had the standard language server implementation) was
+made with lisp for lisp. Naturally, I decided to download it, the name is
+`cl-lsp`. The instructions said to load it using `roswell`, a different
+package manager for Common Lisp that isn't included in SBCL.
 
 Reminder, as I defined earlier, these templates are supposed to be loadable
 and working after entering the nix shell environment. This requirement ins't
@@ -386,18 +386,18 @@ missing that `libasyncprocess` library.
 "libasyncprocess". The results list is empty.
 ](/public/images/2026/common-lisp-frustrations/nix-packages-search-libasyncprocess.webp)
 
-So no library, I decided to look around online some more...
+So with no library, I decided to look around online some more...
 
 ---
 
 I went to sleep, when I woke up, magically, youtube recommended me a video:
 ["Mine: a new IDE for Common Lisp"](https://www.youtube.com/watch?v=qe3vDKQShKs).
-Somehow, even without me using any google products to search for common lisp
+Somehow, even without me using any google products to search for Common Lisp
 stuff (using Startpage to search) youtube somehow knew I was struggling with
 lisp.
 
 The gentleman in the video recommends
-[Mine](https://coalton-lang.github.io/mine/) as a IDE for people who are just
+[Mine](https://coalton-lang.github.io/mine/) as an IDE for people who are just
 getting started with lisp as it downloads dependencies automatically and sets
 up an environment for you automatically. "Sick, lemme try it out". All I
 downloaded was an AppImage file; And it looks good, it's a full IDE
@@ -411,8 +411,8 @@ world in common lisp but instead of "world" it says whatever name you pass it.
 In this case, it shows "Hello Pedro".
 ](/public/images/2026/common-lisp-frustrations/mine-showoff.webp)
 
-This gave me a nice taste of what it could be like programming in Lisp,
-apparently it was made for a different flavour of Lisp called "Coalton" but it
+This gave me a nice taste of what it could be like programming in lisp,
+apparently it was made for a different flavour of lisp called "Coalton" but it
 also works and supports Common Lisp. It's supposed to come with `quicklisp`,
 another package manager that dynamically downloads packages as they are used in
 your program, so I wanted to try it out by importing `dexator`.
@@ -429,18 +429,18 @@ QL package does not exist.
 `Package QL does not exist.`?????
 
 So you're telling me, that after I finally conceeded to downloading something
-to my computer so I could learn how to program in lisp, so I would have
-everything auto set up automatically, doesn't include one of the parts it was
-supposed to include?
+to my computer so I could learn how to program in lisp, so that I would have
+everything auto set up automatically, it doesn't include one of the parts it
+was supposed to include?
 
 For reference, I spent in total, probably around 6-7 hours trying to make this
 template, in 2 different days; Spending most of this time trying to fiddle with
-the lisp tooling that I could. Compared to python, which I've never written in
-my life, that took about 3 hours to learn, use pip and write all the code and
-Go which I had never touched a piece of Go code before in my life, took around
-2 hours to learn it, use go tidy, and write all the code for the template. I
-learnt python and Go in the same amount of time I had spent setting up tooling
-for Lisp. Even assembly had better tooling. ASSEMBLY!
+the lisp tooling. Compared to python, which I've never written in my life, it
+took about 3 hours to learn, use `pip` and write all the code. Also, Go, which
+I had never touched a piece of Go code before in my life, took around 2 hours
+to learn, use `go tidy`, and write all the code for the template. I learnt
+python and Go in the same amount of time I had spent setting up tooling for
+lisp. Even assembly had better tooling. ASSEMBLY!
 
 In my rage, I decided to look up "Popular Programs Made in Lisp", I found the
 [awesome-cl](https://awesome-cl.com/) site which has a lot of tools and
