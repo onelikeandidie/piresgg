@@ -3,11 +3,16 @@ import rust from "highlight.js/lib/languages/rust";
 import markdown from "highlight.js/lib/languages/markdown";
 import twig from "highlight.js/lib/languages/twig";
 import ini from "highlight.js/lib/languages/ini";
+import nix from "highlight.js/lib/languages/nix";
+import commonLisp from "highlight.js/lib/languages/lisp";
 
+// Only load stuff we actually use plz
 hljs.registerLanguage("rust", rust);
 hljs.registerLanguage("markdown", markdown);
 hljs.registerLanguage("twig", twig);
 hljs.registerLanguage("ini", ini);
+hljs.registerLanguage("nix", nix);
+hljs.registerLanguage("common-lisp", commonLisp);
 
 function setupCodeBlocks() {
     const codeBlocks = document.querySelectorAll(".prose pre code");

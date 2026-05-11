@@ -1,0 +1,6 @@
+title = "Common Lisp Frustrations"
+date = "2026-05-09"
+tags = ["lisp","rant"]
+slug = "2026-common-lisp-frustrations"
+description = "I just wanted to rant a bit about trying to even use common lisp to make Wikistock bot templates."
+hidden = true
