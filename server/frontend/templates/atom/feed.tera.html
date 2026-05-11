@@ -24,10 +24,10 @@
             {% endif %}
             <id>{{ entry.id | safe }}</id>
             {% if entry.published %}
-                <published>{{ entry.published }}</published>
+                <published>{{ entry.published | rfc3339_date }}</published>
             {% endif %}
             {% if entry.updated %}
-                <updated>{{ entry.updated }}</updated>
+                <updated>{{ entry.updated | rfc3339_date }}</updated>
             {% endif %}
             <summary type="text">{{ entry.summary }}</summary>
             <content type="xhtml">

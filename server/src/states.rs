@@ -1,5 +1,7 @@
 use std::{collections::HashMap, ffi::OsString, path::Path, sync::Mutex};
 
+use chrono::NaiveDate;
+
 use crate::config::Config;
 use crate::{Post, PostMeta};
 
@@ -73,6 +75,21 @@ impl TemplateState {
         tera.register_filter("url", move |value: &tera::Value, _: &HashMap<String, tera::Value>| {
             let value = value.as_str().unwrap();
             Ok(tera::Value::String(format!("{}/{}", base_url, value)))
+        });
+        tera.register_filter("rfc3339_date", move |value: &tera::Value, _: &HashMap<String, tera::Value>| {
+            match value {
+                tera::Value::String(could_be_date) => {
+                    let date = NaiveDate::from_ymd_opt(
+                        could_be_date[0..4].parse::<i32>().unwrap_or(1993),
+                        could_be_date[5..7].parse::<u32>().unwrap_or(1),
+                        could_be_date[8..10].parse::<u32>().unwrap_or(1))
+                        .expect("Could not make date out of date string in template");
+                    Ok(tera::Value::String(date.format("%Y-%m-%dT00:00:00.000Z").to_string()))
+                },
+                _ => Ok(value.to_owned())
+            }
+            // let value = value.as_str().unwrap();
+            // Ok(tera::Value::String(format!("{}/{}", base_url, value)))
         });
 
         TemplateState { tera, config }

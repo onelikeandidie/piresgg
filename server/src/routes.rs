@@ -239,6 +239,10 @@ pub async fn feed(
 
                 html_output
             };
+            // To comply with atom feed regulations, I have to remove
+            // "allowfullscreen" from tags
+            let html_output = html_output.replace("allowfullscreen", "");
+
             Entry {
                 title: post.meta.title,
                 link: format!("{}/post/{}", config_state.host, slug),
