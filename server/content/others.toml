@@ -1,0 +1,7 @@
+title = "Others"
+date = "2026-05-20"
+tags = []
+slug = "others"
+description = "What about others?"
+# Hide this page from the home page
+hidden = true
