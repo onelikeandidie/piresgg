@@ -1,8 +1,6 @@
 # About me
 
-My name is Pedro, I am a software engineer currently remotely working on the
-backend for some webservices at Auto Finesse, a car detailing company based
-in the UK.
+My name is Pedro, I'm currently freelancing.
 
 I have a lot of issues with finishing projects, but I realize at some point
 that I don't need to finish them all the time and I still learn a lot from
